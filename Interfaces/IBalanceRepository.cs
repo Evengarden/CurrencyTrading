@@ -1,7 +1,13 @@
-﻿namespace CurrencyTrading.Interfaces
+﻿using CurrencyTrading.Models;
+
+namespace CurrencyTrading.Interfaces
 {
-    // TODO: Реализовать интерфейс для класса-репозитория сущности Balance
     public interface IBalanceRepository
     {
+        Balance CreateBalance(Balance balance);
+        Balance UpdateBalance(Balance balance);
+        Balance DeleteBalance(Balance balance);
+        bool Save();
+
     }
 }

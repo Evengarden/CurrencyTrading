@@ -1,7 +1,12 @@
-﻿namespace CurrencyTrading.Interfaces
+﻿using CurrencyTrading.Models;
+
+namespace CurrencyTrading.Interfaces
 {
-    // TODO: Реализовать интерфейс для класса-репозитория сущности Trade
     public interface ITradeRepository
     {
+        Trade CreateTrade(Trade trade);
+        ICollection<Trade> GetTrades();
+        Trade GetTrade(int id);
+        bool Save();
     }
 }

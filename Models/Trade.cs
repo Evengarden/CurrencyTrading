@@ -1,4 +1,4 @@
-﻿namespace CurrencyTrading.Models
+﻿ namespace CurrencyTrading.Models
 {
     public class Trade
     {

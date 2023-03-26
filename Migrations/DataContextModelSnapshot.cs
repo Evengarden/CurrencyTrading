@@ -37,7 +37,13 @@ namespace CurrencyTrading.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Currency")
+                        .IsUnique();
 
                     b.ToTable("Balances");
                 });
@@ -54,15 +60,17 @@ namespace CurrencyTrading.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal>("CurrencyAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("OwnerId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -106,9 +114,6 @@ namespace CurrencyTrading.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BalanceId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("text");
@@ -119,9 +124,18 @@ namespace CurrencyTrading.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BalanceId");
-
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("CurrencyTrading.Models.Balance", b =>
+                {
+                    b.HasOne("CurrencyTrading.Models.User", "User")
+                        .WithMany("Balance")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CurrencyTrading.Models.Lot", b =>
@@ -154,22 +168,6 @@ namespace CurrencyTrading.Migrations
                     b.Navigation("TradeLot");
                 });
 
-            modelBuilder.Entity("CurrencyTrading.Models.User", b =>
-                {
-                    b.HasOne("CurrencyTrading.Models.Balance", "Balance")
-                        .WithMany("Users")
-                        .HasForeignKey("BalanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Balance");
-                });
-
-            modelBuilder.Entity("CurrencyTrading.Models.Balance", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("CurrencyTrading.Models.Lot", b =>
                 {
                     b.Navigation("Trade")
@@ -178,6 +176,8 @@ namespace CurrencyTrading.Migrations
 
             modelBuilder.Entity("CurrencyTrading.Models.User", b =>
                 {
+                    b.Navigation("Balance");
+
                     b.Navigation("Lots");
 
                     b.Navigation("Trades");
