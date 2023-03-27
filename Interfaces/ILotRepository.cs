@@ -4,11 +4,11 @@ namespace CurrencyTrading.Interfaces
 {
     public interface ILotRepository
     {
-        Task<Lot> GetLot(int lotId);
-        Task<ICollection<Lot>> GetLots();
-        Task<Lot> CreateLot(Lot lot);
-        Task<Lot> UpdateLot(Lot lot);
-        Task<Lot> DeleteLot(Lot lot);
-        Task<bool> Save();
+        Task<Lot> GetLotAsync(int lotId);
+        Task<ICollection<Lot>> GetLotsAsync();
+        Task<Lot> CreateLotAsync(Lot lot);
+        Task<Lot> UpdateLotAsync(Lot lot);
+        Task<Lot> DeleteLotAsync(Lot lot);
+        Task<bool> SaveAsync();
     }
 }

@@ -4,9 +4,9 @@ namespace CurrencyTrading.Interfaces
 {
     public interface IBalanceRepository
     {
-        Task<Balance> CreateBalance(Balance balance);
-        Task<Balance> UpdateBalance(Balance balance);
-        Task<Balance> DeleteBalance(Balance balance);
-        Task<bool> Save();
+        Task<Balance> CreateBalanceAsync(Balance balance);
+        Task<Balance> UpdateBalanceAsync(Balance balance);
+        Task<Balance> DeleteBalanceAsync(Balance balance);
+        Task<bool> SaveAsync();
     }
 }
