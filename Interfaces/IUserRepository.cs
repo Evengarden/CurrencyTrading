@@ -4,11 +4,12 @@ namespace CurrencyTrading.Interfaces
 {
     public interface IUserRepository
     {
-        User CreateUser(User user);
-        User UpdateUser(User user);
-        ICollection<Balance> GetUserBalance(User user);
-        ICollection<Lot> GetUserLots(User user);
-        ICollection<Trade> GetUserTrades(User user);
-        bool Save();
+
+        Task<User> CreateUserAsync(User user);
+        Task<User> UpdateUserAsync(User user);
+        Task<ICollection<Balance>> GetUserBalanceAsync(User user);
+        Task<ICollection<Lot>> GetUserLotsAsync(User user);
+        Task<ICollection<Trade>> GetUserTradesAsync(User user);
+        Task<bool> SaveAsync();
     }
 }
