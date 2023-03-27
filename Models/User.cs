@@ -7,7 +7,7 @@
         public string Password { get; set; }
         public ICollection<Trade> Trades { get; set; }  
         public ICollection<Lot> Lots { get; set; }
-        public Balance Balance { get; set; }
+        public ICollection<Balance> Balance { get; set; }
 
     }
 }

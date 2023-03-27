@@ -6,9 +6,7 @@ namespace CurrencyTrading.Data
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
-        {
-
-        }
+        { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Trade> Trades { get; set; }
@@ -18,6 +16,7 @@ namespace CurrencyTrading.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Id);
+            modelBuilder.Entity<User>().HasMany(u => u.Balance).WithOne(b=>b.User);
 
             modelBuilder.Entity<Trade>().HasKey(t => t.Id);
             modelBuilder.Entity<Trade>().HasOne(t => t.TradeLot).WithOne(l => l.Trade);
@@ -28,7 +27,7 @@ namespace CurrencyTrading.Data
             modelBuilder.Entity<Lot>().HasOne(l => l.Trade).WithOne(t=>t.TradeLot).HasForeignKey<Trade>(t=>t.Lot_Id);
 
             modelBuilder.Entity<Balance>().HasKey(b => b.Id);
-            modelBuilder.Entity<Balance>().HasMany(b => b.Users).WithOne(u=>u.Balance);
+            modelBuilder.Entity<Balance>().HasIndex("UserId","Currency").IsUnique();
         }
     }
 }
