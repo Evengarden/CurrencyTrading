@@ -4,9 +4,9 @@ namespace CurrencyTrading.Interfaces
 {
     public interface ITradeRepository
     {
-        Trade CreateTrade(Trade trade);
-        ICollection<Trade> GetTrades();
-        Trade GetTrade(int id);
-        bool Save();
+        Task<Trade> CreateTrade(Trade trade);
+        Task<ICollection<Trade>> GetTrades();
+        Task<Trade> GetTrade(int id);
+        Task<bool> Save();
     }
 }
