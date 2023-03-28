@@ -6,7 +6,7 @@ namespace CurrencyTrading.Interfaces
     {
 
         Task<User> CreateUserAsync(User user);
-        Task<User> UpdateUserAsync(User user);
+        Task<User> UpdateUserAsync(int userId,User user);
         Task<User> GetUserAsync(int userId);
         Task<bool> SaveAsync();
     }

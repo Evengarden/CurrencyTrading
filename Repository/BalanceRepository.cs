@@ -1,6 +1,7 @@
 ﻿using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using System.Runtime.InteropServices;
 
 namespace CurrencyTrading.Repository
 {
@@ -15,12 +16,17 @@ namespace CurrencyTrading.Repository
 
         public async Task<Balance> CreateBalanceAsync(Balance balance)
         {
-            throw new NotImplementedException();
+            var createdBalance = await _ctx.AddAsync(balance);
+            await _ctx.SaveChangesAsync();
+            return createdBalance.Entity;
         }
 
-        public async Task<Balance> DeleteBalanceAsync(Balance balance)
+        public async Task<Balance> DeleteBalanceAsync(int balanceId)
         {
-            throw new NotImplementedException();
+            var deletedBalance = await _ctx.Balances.FindAsync(balanceId);
+            _ctx.Balances.Remove(deletedBalance);
+            await _ctx.SaveChangesAsync();
+            return deletedBalance;
         }
 
         public async Task<bool> SaveAsync()
@@ -29,9 +35,13 @@ namespace CurrencyTrading.Repository
             return saved > 0 ? true : false;
         }
 
-        public async Task<Balance> UpdateBalanceAsync(Balance balance)
+        public async Task<Balance> UpdateBalanceAsync(int balanceId, Balance balance)
         {
-            throw new NotImplementedException();
+            var currentBalance = await _ctx.Balances.FindAsync(balanceId);
+            currentBalance.Currency = balance.Currency;
+            currentBalance.Amount = balance.Amount;
+            await SaveAsync();
+            return currentBalance;
         }
     }
 }

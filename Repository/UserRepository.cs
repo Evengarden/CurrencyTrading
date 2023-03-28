@@ -1,6 +1,7 @@
 ﻿using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.Repository
 {
@@ -13,18 +14,25 @@ namespace CurrencyTrading.Repository
         {
             _ctx = ctx;
         }
-        public async  Task<User> CreateUserAsync(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
-            throw new NotImplementedException();
+            var addedUser  = await _ctx.AddAsync(user);
+            await SaveAsync();
+            return addedUser.Entity;
         }
 
-        public async Task<User> UpdateUserAsync(User user)
+        public async Task<User> UpdateUserAsync(int userId,User user)
         {
-            throw new NotImplementedException();
+            var currentUser = await _ctx.Users.FindAsync(userId);
+            currentUser.Login = user.Login;
+            currentUser.Password = user.Password;
+            await SaveAsync();
+            return currentUser;
         } 
         public async Task<User> GetUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            var user = await _ctx.Users.FindAsync(userId);
+            return user;
         }
         
         public async Task<bool> SaveAsync()

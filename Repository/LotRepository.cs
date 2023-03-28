@@ -1,6 +1,7 @@
 ﻿using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.Repository
 {
@@ -13,29 +14,40 @@ namespace CurrencyTrading.Repository
             _ctx = context;
         }
 
-        public Task<Lot> CreateLotAsync(Lot lot)
+        public async Task<Lot> CreateLotAsync(Lot lot)
         {
-            throw new NotImplementedException();
+            var createdLot = await _ctx.AddAsync(lot);
+            await _ctx.SaveChangesAsync();
+            return createdLot.Entity;
         }
 
-        public Task<Lot> DeleteLotAsync(Lot lot)
+        public async Task<Lot> DeleteLotAsync(int lotId)
         {
-            throw new NotImplementedException();
+            var deletedLot = await _ctx.Lots.FindAsync(lotId);
+            _ctx.Lots.Remove(deletedLot);
+            await _ctx.SaveChangesAsync();
+            return deletedLot;        }
+
+        public async Task<Lot> GetLotAsync(int lotId)
+        {
+            var currentLot = await _ctx.Lots.FindAsync(lotId);
+            return currentLot;
         }
 
-        public Task<Lot> GetLotAsync(int lotId)
+        public async Task<ICollection<Lot>> GetLotsAsync()
         {
-            throw new NotImplementedException();
+            var lots = await _ctx.Lots.ToListAsync();
+            return lots;
         }
 
-        public Task<ICollection<Lot>> GetLotsAsync()
+        public async Task<Lot> UpdateLotAsync(int lotId, Lot lot)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Lot> UpdateLotAsync(Lot lot)
-        {
-            throw new NotImplementedException();
+            var currentLot = await _ctx.Lots.FindAsync(lotId);
+            currentLot.Currency = lot.Currency;
+            currentLot.CurrencyAmount = lot.CurrencyAmount;
+            currentLot.Price = lot.Price;
+            await SaveAsync();
+            return currentLot;
         }
         public async Task<bool> SaveAsync()
         {
