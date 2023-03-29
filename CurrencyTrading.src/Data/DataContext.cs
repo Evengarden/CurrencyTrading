@@ -16,6 +16,7 @@ namespace CurrencyTrading.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(u => u.Id);
+            modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();
             modelBuilder.Entity<User>().HasMany(u => u.Balance).WithOne(b=>b.User);
 
             modelBuilder.Entity<Trade>().HasKey(t => t.Id);
