@@ -17,7 +17,7 @@ namespace CurrencyTrading.Repository
         public async Task<User> CreateUserAsync(User user)
         {
             var addedUser  = await _ctx.AddAsync(user);
-            await SaveAsync();
+            await _ctx.SaveChangesAsync();
             return addedUser.Entity;
         }
 
@@ -26,19 +26,13 @@ namespace CurrencyTrading.Repository
             var currentUser = await _ctx.Users.FindAsync(userId);
             currentUser.Login = user.Login;
             currentUser.Password = user.Password;
-            await SaveAsync();
+            await _ctx.SaveChangesAsync();
             return currentUser;
         } 
         public async Task<User> GetUserAsync(int userId)
         {
             var user = await _ctx.Users.FindAsync(userId);
             return user;
-        }
-        
-        public async Task<bool> SaveAsync()
-        {
-            var saved = await _ctx.SaveChangesAsync();
-            return saved > 0 ? true : false;
         }
     }
 }

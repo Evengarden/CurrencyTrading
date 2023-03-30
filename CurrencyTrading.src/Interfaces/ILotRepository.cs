@@ -9,6 +9,5 @@ namespace CurrencyTrading.Interfaces
         Task<Lot> CreateLotAsync(Lot lot);
         Task<Lot> UpdateLotAsync(int lotId,Lot lot);
         Task<Lot> DeleteLotAsync(int lotId);
-        Task<bool> SaveAsync();
     }
 }

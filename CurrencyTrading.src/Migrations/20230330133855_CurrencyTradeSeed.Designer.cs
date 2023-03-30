@@ -3,6 +3,7 @@ using System;
 using CurrencyTrading.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CurrencyTrading.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230330133855_CurrencyTradeSeed")]
+    partial class CurrencyTradeSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,13 +153,13 @@ namespace CurrencyTrading.Migrations
                         {
                             Id = 1,
                             Login = "test1",
-                            Password = "AJOmqN6/0tmMy/XP6Fw2yoM1GdEHDXKePhO2Sej+8JIea5DbemXD8S6QlIQpKfPwFw=="
+                            Password = "test1"
                         },
                         new
                         {
                             Id = 2,
                             Login = "test2",
-                            Password = "ANGmMRfnq/X11FUBexTAeixK/ttTV2wGpbC8o8WvZ8dPxGQ/HXKQJvk7b6HWGhIQXQ=="
+                            Password = "test2"
                         });
                 });
 

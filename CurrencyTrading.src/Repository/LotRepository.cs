@@ -46,13 +46,8 @@ namespace CurrencyTrading.Repository
             currentLot.Currency = lot.Currency;
             currentLot.CurrencyAmount = lot.CurrencyAmount;
             currentLot.Price = lot.Price;
-            await SaveAsync();
+            await _ctx.SaveChangesAsync();
             return currentLot;
-        }
-        public async Task<bool> SaveAsync()
-        {
-            var saved = await _ctx.SaveChangesAsync();
-            return saved > 0 ? true : false;
         }
     }
 }
