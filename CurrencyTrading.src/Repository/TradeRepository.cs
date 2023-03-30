@@ -1,6 +1,7 @@
 ﻿using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.Repository
 {
@@ -15,17 +16,21 @@ namespace CurrencyTrading.Repository
 
         public async Task<Trade> CreateTradeAsync(Trade trade)
         {
-            throw new NotImplementedException();
-        }
+            var createdTrade = await _ctx.AddAsync(trade);
+            await _ctx.SaveChangesAsync();
+            return createdTrade.Entity;
 
+        }
         public async Task<Trade> GetTradeAsync(int id)
         {
-            throw new NotImplementedException();
+            var currentTrade = await _ctx.FindAsync<Trade>(id);
+            return currentTrade;
         }
 
         public async  Task<ICollection<Trade>> GetTradesAsync()
         {
-            throw new NotImplementedException();
+            var trades = await _ctx.Trades.ToListAsync();
+            return trades;
         }
 
         public async Task<bool> SaveAsync()

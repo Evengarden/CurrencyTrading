@@ -7,6 +7,5 @@ namespace CurrencyTrading.Interfaces
         Task<Balance> CreateBalanceAsync(Balance balance);
         Task<Balance> UpdateBalanceAsync(int balanceId,Balance balance);
         Task<Balance> DeleteBalanceAsync(int balanceId);
-        Task<bool> SaveAsync();
     }
 }

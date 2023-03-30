@@ -29,18 +29,12 @@ namespace CurrencyTrading.Repository
             return deletedBalance;
         }
 
-        public async Task<bool> SaveAsync()
-        {
-            var saved = await _ctx.SaveChangesAsync();
-            return saved > 0 ? true : false;
-        }
-
         public async Task<Balance> UpdateBalanceAsync(int balanceId, Balance balance)
         {
             var currentBalance = await _ctx.Balances.FindAsync(balanceId);
             currentBalance.Currency = balance.Currency;
             currentBalance.Amount = balance.Amount;
-            await SaveAsync();
+            await _ctx.SaveChangesAsync();
             return currentBalance;
         }
     }
