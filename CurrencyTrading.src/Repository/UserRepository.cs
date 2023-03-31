@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.Repository
 {
-    // TODO: Реализовать репозиторий для сущности User
     public class UserRepository : IUserRepository
     {
         private readonly DataContext _ctx;
@@ -24,8 +23,14 @@ namespace CurrencyTrading.Repository
         public async Task<User> UpdateUserAsync(int userId,User user)
         {
             var currentUser = await _ctx.Users.FindAsync(userId);
-            currentUser.Login = user.Login;
-            currentUser.Password = user.Password;
+            if (currentUser.Login != user.Login)
+            {
+                currentUser.Login = user.Login;
+            }
+            if (currentUser.Password != user.Password)
+            {
+                currentUser.Password = user.Password;
+            }
             await _ctx.SaveChangesAsync();
             return currentUser;
         } 

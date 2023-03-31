@@ -3,6 +3,7 @@ using System;
 using CurrencyTrading.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CurrencyTrading.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230331123827_CurrencyTradev2")]
+    partial class CurrencyTradev2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,7 +109,7 @@ namespace CurrencyTrading.Migrations
                     b.Property<int>("BuyerId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("LotId")
+                    b.Property<int>("Lot_Id")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TradeDate")
@@ -116,7 +119,7 @@ namespace CurrencyTrading.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.HasIndex("LotId")
+                    b.HasIndex("Lot_Id")
                         .IsUnique();
 
                     b.ToTable("Trades");
@@ -150,13 +153,13 @@ namespace CurrencyTrading.Migrations
                         {
                             Id = 1,
                             Login = "test1",
-                            Password = "ALxC+CAXv+I9Ag1gmgSU8PbkvRDVC+E11LqXhVXmgAmnxaGhOKetnZ2OfzSSRmzDQg=="
+                            Password = "ABZ67xgApXqpIXf5Xu/oH827IhhYHUbCssetlS7DwGz+uC7fgbVh2oVIB21J7zRHCw=="
                         },
                         new
                         {
                             Id = 2,
                             Login = "test2",
-                            Password = "APynB/yVqGPGClIk1XsiRAlbFiyeVFyinBS4KonF9ak18TyHkl7I3p1dgb+9QDTcgg=="
+                            Password = "AEy/K6Z7gFbkMllxgHU0UhjNQcPlWBN1YyLmRst0De6NSkoED1E4clPvny0taQHElQ=="
                         });
                 });
 
@@ -192,7 +195,7 @@ namespace CurrencyTrading.Migrations
 
                     b.HasOne("CurrencyTrading.Models.Lot", "TradeLot")
                         .WithOne("Trade")
-                        .HasForeignKey("CurrencyTrading.Models.Trade", "LotId")
+                        .HasForeignKey("CurrencyTrading.Models.Trade", "Lot_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

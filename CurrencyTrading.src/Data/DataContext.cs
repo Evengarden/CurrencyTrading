@@ -22,7 +22,7 @@ namespace CurrencyTrading.Data
             modelBuilder.Entity<User>().HasMany(u => u.Balance).WithOne(b=>b.User);
             User user1 = new User
             {
-                Id = 1,
+                Id = 1,  
                 Login = "test1",
                Password = HashPassword.HashPass("test1"),
             };
@@ -41,7 +41,7 @@ namespace CurrencyTrading.Data
 
             modelBuilder.Entity<Lot>().HasKey(l => l.Id);
             modelBuilder.Entity<Lot>().HasOne(l => l.Owner).WithMany(u => u.Lots);
-            modelBuilder.Entity<Lot>().HasOne(l => l.Trade).WithOne(t=>t.TradeLot).HasForeignKey<Trade>(t=>t.Lot_Id);
+            modelBuilder.Entity<Lot>().HasOne(l => l.Trade).WithOne(t=>t.TradeLot).HasForeignKey<Trade>(t=>t.LotId);
 
             modelBuilder.Entity<Balance>().HasKey(b => b.Id);
             modelBuilder.Entity<Balance>().HasIndex("UserId","Currency").IsUnique();
