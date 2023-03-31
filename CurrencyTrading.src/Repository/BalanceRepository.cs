@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace CurrencyTrading.Repository
 {
-    // TODO: Реализовать репозиторий для сущности Balance
     public class BalanceRepository : IBalanceRepository
     {
         private readonly DataContext _ctx;
@@ -32,8 +31,13 @@ namespace CurrencyTrading.Repository
         public async Task<Balance> UpdateBalanceAsync(int balanceId, Balance balance)
         {
             var currentBalance = await _ctx.Balances.FindAsync(balanceId);
-            currentBalance.Currency = balance.Currency;
-            currentBalance.Amount = balance.Amount;
+            if (currentBalance.Currency != balance.Currency) {
+                currentBalance.Currency = balance.Currency;
+            }
+            if(currentBalance.Amount != balance.Amount)
+            {
+                currentBalance.Amount = balance.Amount;
+            }
             await _ctx.SaveChangesAsync();
             return currentBalance;
         }

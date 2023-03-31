@@ -32,11 +32,5 @@ namespace CurrencyTrading.Repository
             var trades = await _ctx.Trades.ToListAsync();
             return trades;
         }
-
-        public async Task<bool> SaveAsync()
-        {
-            var saved = await _ctx.SaveChangesAsync();
-            return saved > 0 ? true : false;
-        }
     }
 }

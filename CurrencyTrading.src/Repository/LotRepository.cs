@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.Repository
 {
-    // TODO: Реализовать репозиторий для сущности Lot
     public class LotRepository : ILotRepository
     {
         private readonly DataContext _ctx;
@@ -43,9 +42,18 @@ namespace CurrencyTrading.Repository
         public async Task<Lot> UpdateLotAsync(int lotId, Lot lot)
         {
             var currentLot = await _ctx.Lots.FindAsync(lotId);
-            currentLot.Currency = lot.Currency;
-            currentLot.CurrencyAmount = lot.CurrencyAmount;
-            currentLot.Price = lot.Price;
+            if (currentLot.Currency != lot.Currency)
+            {
+                currentLot.Currency = lot.Currency;
+            }
+            if (currentLot.CurrencyAmount != lot.CurrencyAmount)
+            {
+                currentLot.CurrencyAmount = lot.CurrencyAmount;
+            }
+            if (currentLot.Price != lot.Price)
+            {
+                currentLot.Price = lot.Price;
+            }
             await _ctx.SaveChangesAsync();
             return currentLot;
         }
