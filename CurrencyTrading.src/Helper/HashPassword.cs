@@ -8,5 +8,10 @@ namespace CurrencyTrading.Helper
         {
             return Crypto.HashPassword(newPassword);
         }
+
+        public static bool VerifyPass(string hashedPass,string pass)
+        {
+            return Crypto.VerifyHashedPassword(hashedPass, pass);
+        }
     }
 }
