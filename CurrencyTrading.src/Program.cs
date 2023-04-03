@@ -2,6 +2,9 @@ using CurrencyTrading.Data;
 using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Repository;
+using CurrencyTrading.services.Helpers;
+using CurrencyTrading.services.Interfaces;
+using CurrencyTrading.services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +25,7 @@ builder.Services.AddTransient<IUserRepository,UserRepository>();
 builder.Services.AddTransient<ILotRepository,LotRepository>();
 builder.Services.AddTransient<ITradeRepository,TradeRepository>();
 builder.Services.AddTransient<IBalanceRepository,BalanceRepository>();
+builder.Services.AddTransient<IUserService,UserService>();
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;

@@ -1,4 +1,4 @@
-﻿namespace CurrencyTrading.Helper
+﻿namespace CurrencyTrading.services.Helpers
 {
     public class JWTSettings
     {

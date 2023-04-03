@@ -42,7 +42,7 @@ namespace CurrencyTrading.Repository
             return user;
         }
 
-        public async Task<User> Auth(string login,string password)
+        public async Task<User> CheckCredentails(string login,string password)
         {
             var user = await _ctx.Users.FirstOrDefaultAsync(u => u.Login == login);
             bool isAuth = HashPassword.VerifyPass(user.Password,password);

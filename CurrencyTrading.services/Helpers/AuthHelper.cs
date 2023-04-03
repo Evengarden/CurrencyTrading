@@ -1,5 +1,5 @@
 ﻿using CurrencyTrading.Models;
-using Microsoft.Extensions.Options;
+using CurrencyTrading.services.Helpers;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

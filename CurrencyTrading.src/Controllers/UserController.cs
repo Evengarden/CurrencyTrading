@@ -1,8 +1,10 @@
 ﻿using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using CurrencyTrading.services.Helpers;
+using CurrencyTrading.services.Interfaces;
+using CurrencyTrading.services.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -12,12 +14,10 @@ namespace CurrencyTrading.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly JWTSettings _config;
-        public UserController(IUserRepository userRepository, IOptions<JWTSettings> config)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
-            _config = config.Value;
+            _userService = userService;
         }
 
         [HttpPost("registration")]
@@ -25,10 +25,8 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
-                user.Password = HashPassword.HashPass(user.Password);
-                var createdUser = await _userRepository.CreateUserAsync(user);
-
-                return Ok("User succesfully created");
+               await _userService.UserRegistration(user);
+               return Ok("User succesfully created");
             }
             catch (DbUpdateException)
             {
@@ -39,10 +37,9 @@ namespace CurrencyTrading.Controllers
         [HttpPost("auth")]
         public async Task<IActionResult> Authorization([FromBody] User user)
         {
-            var findedUser = await _userRepository.Auth(user.Login,user.Password);
-            if (findedUser != null)
+            var token = await _userService.Auth(user);
+            if (token != null)
             {
-                var token = AuthHelper.GenerateJwtToken(findedUser,_config);
                 return Ok(token);
             }
 
@@ -52,7 +49,11 @@ namespace CurrencyTrading.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserAsync()
         {
-          var user = await _userRepository.GetUserAsync(int.Parse(User.Claims.FirstOrDefault(x => x.Type == "ID").Value));
+            int userId = int.Parse(User.Claims.FirstOrDefault(x =>
+            {
+                return x.Type == "ID";
+            }).Value);
+            var user = await _userService.GetCurrentUser(userId);
 
             if (user == null)
             {
