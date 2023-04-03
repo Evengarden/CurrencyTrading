@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Web.Helpers;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CurrencyTrading.Models
 {
