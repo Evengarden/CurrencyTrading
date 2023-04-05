@@ -38,7 +38,9 @@ namespace CurrencyTrading.Repository
         } 
         public async Task<User> GetUserAsync(int userId)
         {
-            var user = await _ctx.Users.FindAsync(userId);
+            var user = await _ctx.Users.Include(u=>u.Balance).
+                Include(u=>u.Lots).
+                Include(u=>u.Trades).FirstOrDefaultAsync(u=>u.Id == userId);
             return user;
         }
 
