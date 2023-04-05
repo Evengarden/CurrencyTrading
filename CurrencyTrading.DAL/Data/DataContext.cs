@@ -1,6 +1,7 @@
 ﻿using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using System.Security.Policy;
 
 namespace CurrencyTrading.Data
@@ -20,11 +21,13 @@ namespace CurrencyTrading.Data
             modelBuilder.Entity<User>().HasKey(u => u.Id);
             modelBuilder.Entity<User>().HasIndex(u => u.Login).IsUnique();
             modelBuilder.Entity<User>().HasMany(u => u.Balance).WithOne(b=>b.User);
+            modelBuilder.Entity<User>().HasMany(u => u.Lots).WithOne(l=>l.Owner);
+            modelBuilder.Entity<User>().HasMany(u => u.Trades).WithOne(l=>l.Buyer);
             User user1 = new User
             {
                 Id = 1,  
                 Login = "test1",
-               Password = HashPassword.HashPass("test1"),
+                Password = HashPassword.HashPass("test1"),
             };
             User user2 = new User
             {
@@ -45,10 +48,11 @@ namespace CurrencyTrading.Data
 
             modelBuilder.Entity<Balance>().HasKey(b => b.Id);
             modelBuilder.Entity<Balance>().HasIndex("UserId","Currency").IsUnique();
-            modelBuilder.Entity<Balance>().HasData
-                (new Balance { Id = 1, Currency = "USD", Amount = 10 , UserId = user1.Id});
-            modelBuilder.Entity<Balance>().HasData
-                (new Balance { Id = 2, Currency = "USD", Amount = 20 , UserId = user2.Id});
+            modelBuilder.Entity<Balance>().HasOne(b => b.User).WithMany(u => u.Balance);
+            Balance balance1 = new Balance { Id = 1, Currency = "USD", Amount = 10, UserId = 1 };
+            Balance balance2 = new Balance { Id = 2, Currency = "USD", Amount = 20, UserId = 2 };
+            modelBuilder.Entity<Balance>().HasData(balance1);
+            modelBuilder.Entity<Balance>().HasData(balance2);
         }
     }
 }

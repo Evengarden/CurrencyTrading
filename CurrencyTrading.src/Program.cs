@@ -25,7 +25,9 @@ builder.Services.AddTransient<IUserRepository,UserRepository>();
 builder.Services.AddTransient<ILotRepository,LotRepository>();
 builder.Services.AddTransient<ITradeRepository,TradeRepository>();
 builder.Services.AddTransient<IBalanceRepository,BalanceRepository>();
-builder.Services.AddTransient<IUserService,UserService>();
+
+builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IBalanceService,BalanceService>();
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;

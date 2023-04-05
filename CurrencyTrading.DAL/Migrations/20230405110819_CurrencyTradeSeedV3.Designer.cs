@@ -3,6 +3,7 @@ using System;
 using CurrencyTrading.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CurrencyTrading.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230405110819_CurrencyTradeSeedV3")]
+    partial class CurrencyTradeSeedV3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +48,7 @@ namespace CurrencyTrading.Migrations
                     b.HasIndex("UserId", "Currency")
                         .IsUnique();
 
-                    b.ToTable("Balances", (string)null);
+                    b.ToTable("Balances");
 
                     b.HasData(
                         new
@@ -92,7 +95,7 @@ namespace CurrencyTrading.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Lots", (string)null);
+                    b.ToTable("Lots");
                 });
 
             modelBuilder.Entity("CurrencyTrading.Models.Trade", b =>
@@ -119,7 +122,7 @@ namespace CurrencyTrading.Migrations
                     b.HasIndex("LotId")
                         .IsUnique();
 
-                    b.ToTable("Trades", (string)null);
+                    b.ToTable("Trades");
                 });
 
             modelBuilder.Entity("CurrencyTrading.Models.User", b =>
@@ -143,20 +146,20 @@ namespace CurrencyTrading.Migrations
                     b.HasIndex("Login")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Login = "test1",
-                            Password = "AOPGWnOfZL+TS9CFLpuvipe/YIHo/ueemUhVAxFrAS8ZSXdE6N8WHP2pvGGm42CRPA=="
+                            Password = "AKovNpXBsaJdA9+zukJXIgIo0xWtFeOs12LKVVTDe7j5PIkRNlM2iM1gimaZ4zu3IQ=="
                         },
                         new
                         {
                             Id = 2,
                             Login = "test2",
-                            Password = "AKqRutMy/DJtbFs+zHNV9Kpir+OhyAG/k85VFuMB6/8kS+sTIZwfvuS/Uv1o+KBwIw=="
+                            Password = "AEqb5bgI3mOi3B+YsGNRgb8sK4chsA22dUI9Yy7YBFSbH93KfGjfbeLdNoaVIg7Tyg=="
                         });
                 });
 

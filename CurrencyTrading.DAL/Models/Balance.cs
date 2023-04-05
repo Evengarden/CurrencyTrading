@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CurrencyTrading.Models
 {
@@ -9,6 +10,7 @@ namespace CurrencyTrading.Models
         public string Currency { get; set; }
         public decimal Amount { get; set; }
         public int UserId { get; set; }
+        [JsonIgnore]
         public User User { get; set; }
     }
 }

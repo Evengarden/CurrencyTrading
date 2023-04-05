@@ -15,7 +15,7 @@ namespace CurrencyTrading.Repository
 
         public async Task<Balance> CreateBalanceAsync(Balance balance)
         {
-            var createdBalance = await _ctx.AddAsync(balance);
+            var createdBalance = await _ctx.Balances.AddAsync(balance);
             await _ctx.SaveChangesAsync();
             return createdBalance.Entity;
         }
