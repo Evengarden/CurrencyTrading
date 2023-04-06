@@ -42,18 +42,7 @@ namespace CurrencyTrading.Repository
         public async Task<Lot> UpdateLotAsync(int lotId, Lot lot)
         {
             var currentLot = await _ctx.Lots.FindAsync(lotId);
-            if (currentLot.Currency != lot.Currency)
-            {
-                currentLot.Currency = lot.Currency;
-            }
-            if (currentLot.CurrencyAmount != lot.CurrencyAmount)
-            {
-                currentLot.CurrencyAmount = lot.CurrencyAmount;
-            }
-            if (currentLot.Price != lot.Price)
-            {
-                currentLot.Price = lot.Price;
-            }
+            currentLot = lot;
             await _ctx.SaveChangesAsync();
             return currentLot;
         }

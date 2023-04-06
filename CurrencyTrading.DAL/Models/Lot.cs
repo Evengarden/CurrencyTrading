@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CurrencyTrading.Models
 {
@@ -6,6 +7,11 @@ namespace CurrencyTrading.Models
     {
         Created,
         Solded
+    }
+    public enum Types
+    {
+        Sold,
+        Buy
     }
     public class Lot
     {
@@ -15,8 +21,10 @@ namespace CurrencyTrading.Models
         public decimal CurrencyAmount { get; set; }
         public decimal Price { get; set; }
         public int OwnerId { get; set; }
+        public Types Type { get; set; }
         public Statuses Status { get; set; }
         public Trade? Trade { get; set; }
+        [JsonIgnore]
         public User Owner { get; set; }
     }
 }
