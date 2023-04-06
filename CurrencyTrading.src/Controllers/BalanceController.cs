@@ -1,4 +1,5 @@
 ﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +21,7 @@ namespace CurrencyTrading.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserBalance()
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(x =>
-            {
-                return x.Type == "ID";
-            }).Value);
+            int userId = GetCurrentUserId.GetUserId(User.Claims);
             var userBalances = await _balanceService.CheckBalance(userId);
             return Ok(userBalances);
         }
@@ -32,11 +30,8 @@ namespace CurrencyTrading.Controllers
         [Authorize]
         public async Task<IActionResult> CreateUserBalance([FromBody] BalanceDTO balance)
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(x =>
-            {
-                return x.Type == "ID";
-            }).Value);
-            var createdBalance = await _balanceService.AddBalance(userId,balance.Currency,balance.Amount);
+            int userId = GetCurrentUserId.GetUserId(User.Claims);
+            var createdBalance = await _balanceService.AddBalance(userId,balance);
             return Ok(createdBalance);
         }
     }

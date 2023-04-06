@@ -3,6 +3,7 @@ using System;
 using CurrencyTrading.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CurrencyTrading.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230406140035_CurrencyTrade_AddTypeOfLot")]
+    partial class CurrencyTrade_AddTypeOfLot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,14 +54,14 @@ namespace CurrencyTrading.Migrations
                         new
                         {
                             Id = 1,
-                            Amount = 10000m,
+                            Amount = 100000m,
                             Currency = "RUB",
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            Amount = 10000m,
+                            Amount = 100000m,
                             Currency = "RUB",
                             UserId = 2
                         });
@@ -153,13 +156,13 @@ namespace CurrencyTrading.Migrations
                         {
                             Id = 1,
                             Login = "test1",
-                            Password = "ABvlouHZkmoL9qWroce0rUnvhnY+84FbuYzhxavygoassww0w2Wi3eYlb9jAxIibfg=="
+                            Password = "ACoGLBnMkrVPHgpthX3n3C/QzAo36Uso9zyM9oHMd4rymXIQucAHBvpCuFnsLpxjVQ=="
                         },
                         new
                         {
                             Id = 2,
                             Login = "test2",
-                            Password = "AKzoOotgaVAYYD3uu9RfEBiRX7m5sWMX6z4k5UBNQgosLrHiLFogAxuOpJUcbfli9w=="
+                            Password = "ANDImAQOzHe3utRfWnnuXAu1z0zrCfoVRcvxao+BRvaoTHSeOPA12HZ72KRgDMcwIg=="
                         });
                 });
 

@@ -49,8 +49,8 @@ namespace CurrencyTrading.Data
             modelBuilder.Entity<Balance>().HasKey(b => b.Id);
             modelBuilder.Entity<Balance>().HasIndex("UserId","Currency").IsUnique();
             modelBuilder.Entity<Balance>().HasOne(b => b.User).WithMany(u => u.Balance);
-            Balance balance1 = new Balance { Id = 1, Currency = "USD", Amount = 10, UserId = 1 };
-            Balance balance2 = new Balance { Id = 2, Currency = "USD", Amount = 20, UserId = 2 };
+            Balance balance1 = new Balance { Id = 1, Currency = "RUB", Amount = 10000, UserId = 1 };
+            Balance balance2 = new Balance { Id = 2, Currency = "RUB", Amount = 10000, UserId = 2 };
             modelBuilder.Entity<Balance>().HasData(balance1);
             modelBuilder.Entity<Balance>().HasData(balance2);
         }

@@ -1,4 +1,5 @@
-﻿using CurrencyTrading.Interfaces;
+﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Interfaces;
 using System;
@@ -18,16 +19,16 @@ namespace CurrencyTrading.services.Services
             _balanceRepository = balanceRepository;
             _userRepository = userRepository;
         }
-        public async Task<Balance> AddBalance(int userId,string currency,decimal amount)
+        public async Task<Balance> AddBalance(int userId,BalanceDTO balanceDTO)
         {
             var currentUserBalance = await _userRepository.GetUserAsync(userId);
             if(currentUserBalance.Balance != null)
             {
                 foreach (var userBalance in currentUserBalance.Balance)
                 {
-                    if (userBalance.Currency == currency)
+                    if (userBalance.Currency == balanceDTO.Currency)
                     {
-                        userBalance.Amount = amount;
+                        userBalance.Amount = balanceDTO.Amount;
                         await _userRepository.UpdateUserAsync(currentUserBalance.Id, currentUserBalance);
                         return userBalance;
                     }
@@ -36,8 +37,8 @@ namespace CurrencyTrading.services.Services
             }
             Balance balance = new Balance 
             {
-                Currency = currency,
-                Amount = amount,
+                Currency = balanceDTO.Currency,
+                Amount = balanceDTO.Amount,
                 User = currentUserBalance
             };
             var newBalance = await _balanceRepository.CreateBalanceAsync(balance);

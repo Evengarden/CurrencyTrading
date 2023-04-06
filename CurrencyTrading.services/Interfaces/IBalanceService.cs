@@ -1,4 +1,5 @@
-﻿using CurrencyTrading.Models;
+﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace CurrencyTrading.services.Interfaces
 {
     public interface IBalanceService
     {
-        Task<Balance> AddBalance(int userId,string currency,decimal amount);
+        Task<Balance> AddBalance(int userId,BalanceDTO balanceDTO);
         Task<ICollection<Balance>> CheckBalance(int userId);
     }
 }

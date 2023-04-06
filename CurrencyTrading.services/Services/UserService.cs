@@ -11,20 +11,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CurrencyTrading.DAL.DTO;
 
 namespace CurrencyTrading.services.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IBalanceRepository _balanceRepository;
         private readonly JWTSettings _config;
-        public UserService(IUserRepository userRepository, IOptions<JWTSettings> config)
+        public UserService(IUserRepository userRepository,IBalanceRepository balanceRepository, IOptions<JWTSettings> config)
         {
             _userRepository = userRepository;
+            _balanceRepository = balanceRepository;
             _config = config.Value;
 
         }
-        public async Task<string?> Auth(User user)
+        public async Task<string?> Auth(UserDTO user)
         {
             var findedUser = await _userRepository.CheckCredentails(user.Login, user.Password);
             if (findedUser != null)
@@ -42,10 +45,31 @@ namespace CurrencyTrading.services.Services
             return user;
         }
 
+        public async Task<User> UpdateUser(int userId,UserDTO user)
+        {
+            var currentUser = await _userRepository.GetUserAsync(userId);
+            if (currentUser.Login != user.Login)
+            {
+                currentUser.Login = user.Login;
+            }
+            if (currentUser.Password != user.Password)
+            {
+                currentUser.Password = user.Password;
+            }
+            return await _userRepository.UpdateUserAsync(userId, currentUser);
+        }
+
         public async Task UserRegistration(User user)
         {
             user.Password = HashPassword.HashPass(user.Password);
             await _userRepository.CreateUserAsync(user);
+            Balance balance = new Balance
+            { 
+                Currency = "RUB",
+                Amount = 10000,
+                User = user 
+            };
+            await _balanceRepository.CreateBalanceAsync(balance);
         }
     }
 }

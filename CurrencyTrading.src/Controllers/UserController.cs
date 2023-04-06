@@ -1,4 +1,5 @@
-﻿using CurrencyTrading.Helper;
+﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Helpers;
@@ -35,7 +36,7 @@ namespace CurrencyTrading.Controllers
         }
 
         [HttpPost("auth")]
-        public async Task<IActionResult> Authorization([FromBody] User user)
+        public async Task<IActionResult> Authorization([FromBody] UserDTO user)
         {
             var token = await _userService.Auth(user);
             if (token != null)
@@ -49,10 +50,7 @@ namespace CurrencyTrading.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserAsync()
         {
-            int userId = int.Parse(User.Claims.FirstOrDefault(x =>
-            {
-                return x.Type == "ID";
-            }).Value);
+            int userId = GetCurrentUserId.GetUserId(User.Claims);
             var user = await _userService.GetCurrentUser(userId);
 
             if (user == null)
