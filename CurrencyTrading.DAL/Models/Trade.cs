@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CurrencyTrading.Models
 {
@@ -9,6 +10,7 @@ namespace CurrencyTrading.Models
         public DateTime TradeDate { get; set; }
         public int LotId { get; set; }
         public int BuyerId { get; set; }
+        [JsonIgnore]
         public User Buyer { get; set; }
         public Lot TradeLot { get; set; }
     }

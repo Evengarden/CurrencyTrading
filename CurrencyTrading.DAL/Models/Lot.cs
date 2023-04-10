@@ -23,6 +23,7 @@ namespace CurrencyTrading.Models
         public int OwnerId { get; set; }
         public Types Type { get; set; }
         public Statuses Status { get; set; }
+        [JsonIgnore]
         public Trade? Trade { get; set; }
         [JsonIgnore]
         public User Owner { get; set; }

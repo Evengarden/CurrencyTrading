@@ -29,6 +29,7 @@ builder.Services.AddTransient<IBalanceRepository,BalanceRepository>();
 builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IBalanceService,BalanceService>();
 builder.Services.AddTransient<ILotService,LotService>();
+builder.Services.AddTransient<ITradeService,TradeService>();
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;
@@ -54,6 +55,9 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
