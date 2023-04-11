@@ -8,8 +8,6 @@ namespace CurrencyTrading.DAL.DTO
 {
     public class TradeDTO
     {
-        public DateTime TradeDate { get; set; }
         public int LotId { get; set; }
-        public int BuyerId { get; set; }
     }
 }

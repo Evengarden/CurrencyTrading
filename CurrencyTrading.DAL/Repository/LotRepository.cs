@@ -29,7 +29,8 @@ namespace CurrencyTrading.Repository
 
         public async Task<Lot> GetLotAsync(int lotId)
         {
-            var currentLot = await _ctx.Lots.FindAsync(lotId);
+            var currentLot = await _ctx.Lots.Include(u => u.Owner).
+                Include(u => u.Trade).FirstOrDefaultAsync(u => u.Id == lotId);
             return currentLot;
         }
 

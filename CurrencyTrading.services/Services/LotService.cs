@@ -5,6 +5,7 @@ using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
 using System.Runtime.CompilerServices;
 using System.Transactions;
+using CurrencyTrading.services.Helpers;
 
 namespace CurrencyTrading.services.Services
 {
@@ -26,11 +27,11 @@ namespace CurrencyTrading.services.Services
 
             if (lot.Type == Types.Sold)
             {
-                CheckEnoughBalanceForSold(user, userLots, lot);
+                CheckBalances.CheckEnoughBalanceForSold(user, userLots, lot);
             }
             else
             {
-                CheckEnoughBalanceForBuy(user, userLots, lot);
+                CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
             }
             Lot newLot = new Lot 
             {
@@ -75,11 +76,11 @@ namespace CurrencyTrading.services.Services
             var userLots = user.Lots.ToList();
             if (lot.Type == Types.Sold)
             {
-                CheckEnoughBalanceForSold(user, userLots, lot);
+                CheckBalances.CheckEnoughBalanceForSold(user, userLots, lot);
             }
             else
             {
-                CheckEnoughBalanceForBuy(user, userLots, lot);
+                CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
             }
             var updatedLot = await _lotRepository.GetLotAsync(lotId);
             if (updatedLot.Status == Statuses.Solded) 
@@ -102,55 +103,6 @@ namespace CurrencyTrading.services.Services
             return await _lotRepository.UpdateLotAsync(lotId,updatedLot);
         }
 
-        private void CheckEnoughBalanceForSold(User user,List<Lot> userLots, LotDTO lot)
-        {
-           var userBalance = user.Balance.FirstOrDefault(b =>
-            {
-                return b.Currency == lot.Currency;
-            });
-            decimal userLotsAmountSum = userLots.Where(u=>u.Currency == lot.Currency &&
-                                                        u.Type == Types.Sold)
-                                                .Sum(l => l.CurrencyAmount);
-            if (userBalance != null)
-            {
-                if (userBalance.Amount < lot.CurrencyAmount || userBalance.Amount < userLotsAmountSum + lot.CurrencyAmount)
-                {
-                    throw new NotEnoughBalanceForSold
-                    {
-                        CurrentBalance = userBalance.Amount,
-                        LotCurrencyAmount = lot.CurrencyAmount,
-                        UserLotAmountSum = userLotsAmountSum + lot.CurrencyAmount
-                    };
-                }
-            }
-            else
-            {
-                throw new BalanceDoesNotExist
-                {
-                    Currency = lot.Currency
-                };
-            }
-        }
-        private void CheckEnoughBalanceForBuy(User user, List<Lot> userLots, LotDTO lot)
-        {
-            var userBalance = user.Balance.FirstOrDefault(b =>
-            {
-                return b.Currency == "RUB";
-            });
-            decimal userLotsSumOfBuy = userLots.Where(u=>u.Type == Types.Buy)
-                                                  .Sum(l => l.Price);
-            if (userBalance != null)
-            {
-                if (userBalance.Amount < lot.Price || userBalance.Amount < lot.Price + userLotsSumOfBuy)
-                {
-                    throw new NotEnoughBalanceForBuy
-                    {
-                        CurrentBalance = userBalance.Amount,
-                        LotPrice = lot.Price,
-                        SumOfLotForBuy = lot.Price + userLotsSumOfBuy
-                    };
-                }
-            }
-        }
+       
     }
 }
