@@ -1,0 +1,20 @@
+﻿services:
+  dotnet:
+    image: currencytrading
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+    - "5052:80"
+  postgresql:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: "CurrencyTrade"
+      POSTGRES_USER: "pgsql"
+      POSTGRES_PASSWORD: "pgsql"
+  redis:
+    image: redis
+    restart: always
+    ports: 
+    - "6379:6379"

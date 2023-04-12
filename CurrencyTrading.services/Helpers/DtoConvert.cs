@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CurrencyTrading.services.Helpers
 {
@@ -19,6 +20,24 @@ namespace CurrencyTrading.services.Helpers
                 Price = lot.Price,
                 Type = lot.Type
             };
+        }
+
+        public static ICollection<CurrencyDTO> XmlToCurrencyDTO(XElement xml)
+        {
+            List<CurrencyDTO> currencyDTOs = new List<CurrencyDTO>();
+
+            foreach (XElement element in xml.Elements())
+            {
+                currencyDTOs.Add(new CurrencyDTO
+                {
+                    CurrencyCode = element.Element("CharCode").Value,
+                    CurrencyNominal = int.Parse(element.Element("Nominal").Value),
+                    CurrencyPrice = Convert.ToDecimal(element.Element("Value").Value.Replace(",","."))
+
+                });
+            }
+
+            return currencyDTOs;
         }
     }
 }
