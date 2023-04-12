@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.services.CustomExceptions;
 
 namespace CurrencyTrading.services.Services
 {
@@ -29,14 +30,21 @@ namespace CurrencyTrading.services.Services
         }
         public async Task<string?> Auth(UserDTO user)
         {
-            var findedUser = await _userRepository.CheckCredentails(user.Login, user.Password);
-            if (findedUser != null)
+            try
             {
-                var token = AuthHelper.GenerateJwtToken(findedUser, _config);
-                return token;
-            }
+                var findedUser = await _userRepository.CheckCredentails(user.Login, user.Password);
+                if (findedUser != null)
+                {
+                    var token = AuthHelper.GenerateJwtToken(findedUser, _config);
+                    return token;
+                }
 
-            return null;
+                return null;
+            }
+            catch (NullReferenceException)
+            {
+                throw new UserNotFound();
+            }
         }
 
         public async Task<User> GetCurrentUser(int userId)

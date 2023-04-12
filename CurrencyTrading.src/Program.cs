@@ -1,5 +1,5 @@
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
+using Quartz;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Repository;
 using CurrencyTrading.services.Helpers;
@@ -30,6 +30,25 @@ builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IBalanceService,BalanceService>();
 builder.Services.AddTransient<ILotService,LotService>();
 builder.Services.AddTransient<ITradeService,TradeService>();
+builder.Services.AddTransient<IIntegrationService,IntegrationService>();
+
+builder.Services.AddStackExchangeRedisCache(options => {
+    options.Configuration = "redis:6379,abortConnect=false";
+});
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+    var jobKey = new JobKey("GetCurrencyFromCb");
+    q.AddJob<IntegrationService>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("GetCurrencyFromCb-trigger")
+        .WithCronSchedule("0 0 0 * * ?")
+    );
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSettings"));
 var secretKey = builder.Configuration.GetSection("JWTSettings:SecretKey").Value;
@@ -66,5 +85,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<DataContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 
 app.Run();

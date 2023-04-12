@@ -38,13 +38,20 @@ namespace CurrencyTrading.Controllers
         [HttpPost("auth")]
         public async Task<IActionResult> Authorization([FromBody] UserDTO user)
         {
-            var token = await _userService.Auth(user);
-            if (token != null)
+            try
             {
-                return Ok(token);
-            }
+                var token = await _userService.Auth(user);
+                if (token != null)
+                {
+                    return Ok(token);
+                }
 
-            return BadRequest("Invalid credentails");
+                return BadRequest("Invalid credentails");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         [HttpGet("getUser")]
         [Authorize]
