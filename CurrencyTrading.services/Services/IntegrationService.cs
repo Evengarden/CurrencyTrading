@@ -1,18 +1,10 @@
 ﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Models;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Quartz;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace CurrencyTrading.services.Services
@@ -39,24 +31,19 @@ namespace CurrencyTrading.services.Services
             return currencies;
         }
 
-        public async Task<ICollection<CurrencyDTO>> test()
-        {
-            var client = new RestClient("http://www.cbr.ru/scripts/XML_daily.asp");
-
-            var request = new RestRequest();
-
-            var response = await client.GetAsync(request);
-            Console.WriteLine($"CONTENT {response.Content}");
-            var xElement = XElement.Parse(response.Content);
-
-            var currencies = DtoConvert.XmlToCurrencyDTO(xElement);
-
-            return currencies;
-        }
-
         public async Task Execute(IJobExecutionContext context)
         {
-            await SendRequestToCB();
+            try
+            {
+                await SendRequestToCB();
+            }
+            catch(Exception ex)
+            {
+                await Task.Delay(300000);
+                JobExecutionException qe = new JobExecutionException(ex);
+                qe.RefireImmediately = true;
+                throw qe;
+            }
         }
 
         private async Task SendRequestToCB()
