@@ -39,13 +39,22 @@ builder.Services.AddStackExchangeRedisCache(options => {
 builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionScopedJobFactory();
-    var jobKey = new JobKey("GetCurrencyFromCb");
-    q.AddJob<IntegrationService>(opts => opts.WithIdentity(jobKey));
+    var getCurrencyJobKey = new JobKey("GetCurrencyFromCb");
+    q.AddJob<IntegrationService>(opts => opts.WithIdentity(getCurrencyJobKey));
 
     q.AddTrigger(opts => opts
-        .ForJob(jobKey)
+        .ForJob(getCurrencyJobKey)
         .WithIdentity("GetCurrencyFromCb-trigger")
         .WithCronSchedule("0 0 0 * * ?")
+    );
+
+    var startAutomatchingJobKey = new JobKey("Automatching");
+    q.AddJob<MatchingService>(opts => opts.WithIdentity(startAutomatchingJobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(startAutomatchingJobKey)
+        .WithIdentity("Automatching-trigger")
+        .WithCronSchedule("0 */10 * ? * *")
     );
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

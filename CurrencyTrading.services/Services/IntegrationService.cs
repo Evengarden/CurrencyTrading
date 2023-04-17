@@ -37,7 +37,7 @@ namespace CurrencyTrading.services.Services
             {
                 await SendRequestToCB();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await Task.Delay(300000);
                 JobExecutionException qe = new JobExecutionException(ex);
