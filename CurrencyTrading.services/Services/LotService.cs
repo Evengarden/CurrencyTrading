@@ -11,19 +11,19 @@ namespace CurrencyTrading.services.Services
 {
     public class LotService : ILotService
     {
-        private readonly IBalanceRepository _balanceRepository;
         private readonly IUserRepository _userRepository;
         private readonly ILotRepository _lotRepository;
-        public LotService(IBalanceRepository balanceRepository, IUserRepository userRepository, ILotRepository lotRepository)
+        private readonly ITradeService _tradeService;
+        public LotService(ITradeService tradeService, IUserRepository userRepository, ILotRepository lotRepository)
         {
-            _balanceRepository = balanceRepository;
             _userRepository = userRepository;
             _lotRepository = lotRepository;
+            _tradeService = tradeService;
         }
         public async Task<Lot> CreateLot(int userId, LotDTO lot)
         {
             var user = await _userRepository.GetUserAsync(userId);
-            var userLots = user.Lots.ToList();
+            var userLots = user.Lots?.ToList();
 
             if (lot.Type == Types.Sold)
             {
@@ -36,6 +36,7 @@ namespace CurrencyTrading.services.Services
             Lot newLot = new Lot 
             {
                 Currency = lot.Currency,
+                Automatch = lot.Automatch,
                 CurrencyAmount = lot.CurrencyAmount,
                 Price = lot.Price,
                 Owner = user,
@@ -43,6 +44,7 @@ namespace CurrencyTrading.services.Services
                 Type = lot.Type
             };
             var createdLot = await _lotRepository.CreateLotAsync(newLot);
+
             return createdLot;
         }
 
@@ -99,7 +101,11 @@ namespace CurrencyTrading.services.Services
             {
                 updatedLot.Price = lot.Price;
             }
-           
+            if (updatedLot.Automatch != lot.Automatch)
+            {
+                updatedLot.Automatch = lot.Automatch;
+            }
+
             return await _lotRepository.UpdateLotAsync(lotId,updatedLot);
         }
 

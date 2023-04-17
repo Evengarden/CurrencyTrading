@@ -13,6 +13,11 @@ namespace CurrencyTrading.Models
         Sold,
         Buy
     }
+    public enum Automatch
+    {
+        On,
+        Off
+    }
     public class Lot
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,6 +28,7 @@ namespace CurrencyTrading.Models
         public int OwnerId { get; set; }
         public Types Type { get; set; }
         public Statuses Status { get; set; }
+        public Automatch Automatch { get; set; }
         [JsonIgnore]
         public Trade? Trade { get; set; }
         [JsonIgnore]
