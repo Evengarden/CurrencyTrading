@@ -67,5 +67,22 @@ namespace CurrencyTrading.Controllers
 
             return Ok(user);
         }
+
+        [Authorize]
+        [HttpPatch("updateUser")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] UserDTO user)
+        {
+            try
+            {
+                int userId = GetCurrentUserId.GetUserId(User.Claims);
+                var updatedUser = await _userService.UpdateUser(userId, user);
+                return Ok(updatedUser);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+        }
     }
 }
