@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.services.CustomExceptions;
+using CurrencyTrading.DAL.Helpers;
 
 namespace CurrencyTrading.services.Services
 {
@@ -55,16 +56,10 @@ namespace CurrencyTrading.services.Services
 
         public async Task<User> UpdateUser(int userId,UserDTO user)
         {
+            user.Password = HashPassword.HashPass(user.Password);
             var currentUser = await _userRepository.GetUserAsync(userId);
-            if (currentUser.Login != user.Login)
-            {
-                currentUser.Login = user.Login;
-            }
-            if (currentUser.Password != user.Password)
-            {
-                currentUser.Password = user.Password;
-            }
-            return await _userRepository.UpdateUserAsync(userId, currentUser);
+            var newUser = UpdateEntityHelper.updateEntity(user, currentUser);
+            return await _userRepository.UpdateUserAsync(userId, newUser);
         }
 
         public async Task UserRegistration(User user)

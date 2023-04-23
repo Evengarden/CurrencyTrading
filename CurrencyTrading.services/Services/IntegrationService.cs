@@ -1,4 +1,5 @@
 ﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
@@ -64,14 +65,34 @@ namespace CurrencyTrading.services.Services
             {
                 var currencyJson = JsonConvert.SerializeObject(new
                 {
-                    code = currency.CurrencyCode.ToString(),
-                    nominal = currency.CurrencyNominal.ToString(),
-                    price = currency.CurrencyPrice.ToString()
+                    CurrencyCode = currency.CurrencyCode.ToString(),
+                    CurrencyNominal = currency.CurrencyNominal.ToString(),
+                    CurrencyPrice = currency.CurrencyPrice.ToString()
                 });
                 await _cache.SetStringAsync(currency.CurrencyCode, currencyJson, options);
                 currencyCodes.Add(currency.CurrencyCode.ToString());
             }
             await _cache.SetStringAsync("codes", string.Join(",", currencyCodes));
+        }
+        public async Task<decimal> CalculateLotPrice(string currency, decimal currencyAmount)
+        {
+            var currencyFromRedis = await CheckCurrencyExist(currency);
+            var currencyDeserialize = JsonConvert.DeserializeObject<CurrencyDTO>(currencyFromRedis);
+            decimal calculatedPrice = (currencyDeserialize.CurrencyPrice / currencyDeserialize.CurrencyNominal) * currencyAmount;
+            return calculatedPrice;
+        }
+
+        public async Task<string?> CheckCurrencyExist(string currency)
+        {
+            var currencyFromRedis = await _cache.GetStringAsync(currency);
+            if(currencyFromRedis == null)
+            {
+                throw new CurrencyNotFound 
+                {
+                    Currency = currency,
+                };
+            }
+            return currencyFromRedis;
         }
     }
 }

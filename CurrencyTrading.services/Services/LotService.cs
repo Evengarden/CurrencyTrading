@@ -6,6 +6,7 @@ using CurrencyTrading.services.Interfaces;
 using System.Runtime.CompilerServices;
 using System.Transactions;
 using CurrencyTrading.services.Helpers;
+using CurrencyTrading.DAL.Helpers;
 
 namespace CurrencyTrading.services.Services
 {
@@ -13,13 +14,12 @@ namespace CurrencyTrading.services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILotRepository _lotRepository;
-        private readonly ITradeService _tradeService;
-        public LotService(ITradeService tradeService, IUserRepository userRepository, ILotRepository lotRepository)
+        public LotService(IUserRepository userRepository, ILotRepository lotRepository)
         {
             _userRepository = userRepository;
             _lotRepository = lotRepository;
-            _tradeService = tradeService;
         }
+
         public async Task<Lot> CreateLot(int userId, LotDTO lot)
         {
             var user = await _userRepository.GetUserAsync(userId);
@@ -85,28 +85,14 @@ namespace CurrencyTrading.services.Services
                 CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
             }
             var updatedLot = await _lotRepository.GetLotAsync(lotId);
+
+            var newLot = UpdateEntityHelper.updateEntity(lot,updatedLot);
             if (updatedLot.Status == Statuses.Solded) 
             {
                 throw new LotAlreadySolded();
             }
-            if (updatedLot.Currency != lot.Currency)
-            {
-                updatedLot.Currency = lot.Currency;
-            }
-            if (updatedLot.CurrencyAmount != lot.CurrencyAmount)
-            {
-                updatedLot.CurrencyAmount = lot.CurrencyAmount;
-            }
-            if (updatedLot.Price != lot.Price)
-            {
-                updatedLot.Price = lot.Price;
-            }
-            if (updatedLot.Automatch != lot.Automatch)
-            {
-                updatedLot.Automatch = lot.Automatch;
-            }
 
-            return await _lotRepository.UpdateLotAsync(lotId,updatedLot);
+            return await _lotRepository.UpdateLotAsync(lotId, newLot);
         }
 
        

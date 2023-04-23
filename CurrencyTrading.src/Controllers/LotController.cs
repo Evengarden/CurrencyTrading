@@ -13,9 +13,11 @@ namespace CurrencyTrading.Controllers
     public class LotController : ControllerBase
     {
         private readonly ILotService _lotService;
-        public LotController(ILotService lotService)
+        private readonly IIntegrationService _integrationService;
+        public LotController(ILotService lotService, IIntegrationService integrationService)
         {
             _lotService = lotService;
+            _integrationService = integrationService;
         }
 
         [Authorize]
@@ -41,6 +43,7 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
+                await _integrationService.CheckCurrencyExist(lot.Currency);
                 int userId = GetCurrentUserId.GetUserId(User.Claims);
                 var updatedLot = await _lotService.UpdateLot(id, lot, userId);
                 return Ok(updatedLot);
@@ -72,6 +75,7 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
+                await _integrationService.CheckCurrencyExist(lot.Currency);
                 int userId = GetCurrentUserId.GetUserId(User.Claims);
                 var createdLot = await _lotService.CreateLot(userId, lot);
                 return Ok(createdLot);

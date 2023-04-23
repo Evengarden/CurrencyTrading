@@ -11,6 +11,7 @@ namespace CurrencyTrading.services.Interfaces
     public interface IIntegrationService
     {
         Task<ICollection<CurrencyDTO>> GetCurrencyFromRedis();
-
+        Task<decimal> CalculateLotPrice(string currency, decimal currencyAmount);
+        Task<string?> CheckCurrencyExist(string currency);
     }
 }
