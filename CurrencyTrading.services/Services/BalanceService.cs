@@ -22,7 +22,7 @@ namespace CurrencyTrading.services.Services
         public async Task<Balance> AddBalance(int userId,BalanceDTO balanceDTO)
         {
             var currentUserBalance = await _userRepository.GetUserAsync(userId);
-            if(currentUserBalance.Balance != null)
+            if(currentUserBalance.Balance.Count > 0)
             {
                 foreach (var userBalance in currentUserBalance.Balance)
                 {
