@@ -25,4 +25,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: xqyz/CurrencyTrade:latest
+          tags: xqyz/currencytrade:latest
