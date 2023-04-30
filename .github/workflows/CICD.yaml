@@ -18,9 +18,6 @@ jobs:
         
       - name: Build image
         run: docker compose build
-     
-      - name: Add tag to image
-        run: docker tag currencytrading ${{ secrets.DOCKERHUB_USERNAME }}/currencytrading
 
       - name: Push image to Dockerhub
-        run: docker compose push ${{ secrets.DOCKERHUB_USERNAME }}/currencytrading
+        run: docker compose push

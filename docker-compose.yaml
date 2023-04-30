@@ -1,6 +1,6 @@
 ﻿services:
   dotnet:
-    image: currencytrading
+    image: xqyz/currencytrading
     build:
         context: .
         dockerfile: Dockerfile
