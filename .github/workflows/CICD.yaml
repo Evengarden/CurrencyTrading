@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Build image
-        run: docker compose -f docker-compose.prod.yml build
+        run: docker compose -f docker-compose.yaml build
 
       - name: Push image to DO Container Registry
-        run: docker compose -f docker-compose.prod.yml push
+        run: docker compose -f docker-compose.yaml push
