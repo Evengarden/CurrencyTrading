@@ -67,7 +67,7 @@ namespace CurrencyTrading.services.Services
             return await _lotRepository.GetLotAsync(lotId);
         }
 
-        public async Task<ICollection<Lot>> GetLots(int userId)
+        public async Task<ICollection<Lot>> GetLots()
         {
             return await _lotRepository.GetLotsAsync();
         }

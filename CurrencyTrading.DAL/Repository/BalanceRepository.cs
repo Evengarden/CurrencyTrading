@@ -31,6 +31,7 @@ namespace CurrencyTrading.Repository
         public async Task<Balance> UpdateBalanceAsync(int balanceId, Balance balance)
         {
             var currentBalance = await _ctx.Balances.FindAsync(balanceId);
+            //TODO: поправить
             if (currentBalance.Currency != balance.Currency) {
                 currentBalance.Currency = balance.Currency;
             }

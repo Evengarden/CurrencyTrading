@@ -33,7 +33,7 @@ namespace CurrencyTrading.Controllers
         public async Task<IActionResult> GetLots()
         {
             int userId = GetCurrentUserId.GetUserId(User.Claims);
-            var lots = await _lotService.GetLots(userId);
+            var lots = await _lotService.GetLots();
             return Ok(lots);
         }
 
