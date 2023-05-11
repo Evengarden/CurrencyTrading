@@ -1,6 +1,5 @@
 ﻿using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
@@ -19,23 +18,9 @@ namespace CurrencyTrading.test.src.ServicesTests
         private readonly Mock<ILotRepository> _lotRepository;
         public LotServiceTests()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-              .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-              .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
-            _user.Balance = new List<Balance> {
-                new Balance {
-                Amount = 100,
-                Currency ="USD",
-                User = _user
-                }
-            };
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx, out _user);
+            PrepareTestsData.InitUserBalance(_user);
             _userRepository = new Mock<IUserRepository>();
             _lotRepository = new Mock<ILotRepository>();
             _lotService = new LotService(_userRepository.Object,_lotRepository.Object);

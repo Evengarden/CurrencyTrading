@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Interfaces;
 using CurrencyTrading.services.Services;
@@ -13,9 +12,11 @@ namespace CurrencyTrading.Controllers
     public class TradeController : ControllerBase
     {
         private readonly ITradeService _tradeService;
-        public TradeController(ITradeService tradeService)
+        private readonly IAuthService _authService;
+        public TradeController(ITradeService tradeService, IAuthService authService)
         {
             _tradeService = tradeService;
+            _authService = authService;
         }
 
         [Authorize]
@@ -40,7 +41,7 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
-                int userId = GetCurrentUserId.GetUserId(User.Claims);
+                int userId = _authService.GetUserId(User.Claims);
                 var createdTrade = await _tradeService.CreateTrade(tradeDTO, userId);
                 return Ok(createdTrade);
             }

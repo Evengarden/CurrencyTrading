@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CurrencyTrading.DAL.Mapping;
+using CurrencyTrading.DAL.Repository;
+using CurrencyTrading.DAL.Interfaces;
 
 namespace CurrencyTrading
 {
@@ -28,16 +31,19 @@ namespace CurrencyTrading
                 options.UseNpgsql(Configuration.GetConnectionString("PostgresConnection"));
             });
 
+            services.AddAutoMapper(typeof(AppMappingProfiles));
+
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ILotRepository, LotRepository>();
             services.AddTransient<ITradeRepository, TradeRepository>();
             services.AddTransient<IBalanceRepository, BalanceRepository>();
+            services.AddTransient<ICurrencyRepository, CurrencyRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IBalanceService, BalanceService>();
             services.AddTransient<ILotService, LotService>();
             services.AddTransient<ITradeService, TradeService>();
-            services.AddTransient<IIntegrationService, IntegrationService>();
+            services.AddTransient<ICurrencyService, CurrencyService>();
 
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = "redis:6379,abortConnect=false";
@@ -47,7 +53,7 @@ namespace CurrencyTrading
             {
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
                 var getCurrencyJobKey = new JobKey("GetCurrencyFromCb");
-                q.AddJob<IntegrationService>(opts => opts.WithIdentity(getCurrencyJobKey));
+                q.AddJob<CurrencyService>(opts => opts.WithIdentity(getCurrencyJobKey));
 
                 q.AddTrigger(opts => opts
                     .ForJob(getCurrencyJobKey)

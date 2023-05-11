@@ -1,16 +1,6 @@
-﻿using CurrencyTrading.Helper;
-using CurrencyTrading.Interfaces;
+﻿using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.DAL.Helpers;
@@ -21,31 +11,25 @@ namespace CurrencyTrading.services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IBalanceRepository _balanceRepository;
-        private readonly JWTSettings _config;
-        public UserService(IUserRepository userRepository,IBalanceRepository balanceRepository, IOptions<JWTSettings> config)
+        private readonly IAuthService _authService;
+        public UserService(IUserRepository userRepository,IBalanceRepository balanceRepository, IAuthService authService)
         {
             _userRepository = userRepository;
             _balanceRepository = balanceRepository;
-            _config = config.Value;
+            _authService = authService;
 
         }
         public async Task<string?> Auth(UserDTO user)
         {
-            try
+            var findedUser = await _userRepository.GetUserByLogin(user.Login);
+            bool isAuth = _authService.VerifyPass(user.Password, findedUser.Password);
+            if (isAuth)
             {
-                var findedUser = await _userRepository.CheckCredentails(user.Login, user.Password);
-                if (findedUser != null)
-                {
-                    var token = AuthHelper.GenerateJwtToken(findedUser, _config);
-                    return token;
-                }
+                var token = _authService.GenerateJwtToken(findedUser);
+                return token;
+            }
 
-                return null;
-            }
-            catch (NullReferenceException)
-            {
-                throw new UserNotFound();
-            }
+            throw new UserNotFound();
         }
 
         public async Task<User> GetCurrentUser(int userId)
@@ -56,7 +40,7 @@ namespace CurrencyTrading.services.Services
 
         public async Task<User> UpdateUser(int userId,UserDTO user)
         {
-            user.Password = HashPassword.HashPass(user.Password);
+            user.Password = _authService.HashPass(user.Password);
             var currentUser = await _userRepository.GetUserAsync(userId);
             var newUser = UpdateEntityHelper.updateEntity(user, currentUser);
             return await _userRepository.UpdateUserAsync(userId, newUser);
@@ -64,7 +48,7 @@ namespace CurrencyTrading.services.Services
 
         public async Task UserRegistration(User user)
         {
-            user.Password = HashPassword.HashPass(user.Password);
+            user.Password = _authService.HashPass(user.Password);
             await _userRepository.CreateUserAsync(user);
             Balance balance = new Balance
             { 

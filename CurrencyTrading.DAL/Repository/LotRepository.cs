@@ -1,4 +1,5 @@
-﻿using CurrencyTrading.Data;
+﻿using AutoMapper;
+using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,11 @@ namespace CurrencyTrading.Repository
     public class LotRepository : ILotRepository
     {
         private readonly DataContext _ctx;
-        public LotRepository(DataContext context)
+        private readonly IMapper _mapper;
+        public LotRepository(DataContext context, IMapper mapper)
         {
             _ctx = context;
+            _mapper = mapper;
         }
 
         public async Task<Lot> CreateLotAsync(Lot lot)

@@ -1,29 +1,25 @@
-﻿using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
+﻿using AutoMapper;
+using CurrencyTrading.DAL.Mapping;
+using CurrencyTrading.Data;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace CurrencyTrading.test.src.RepositoryTests
 {
-    public class LotRepositoryTests : IDisposable
+    public class LotRepositoryTests
     {
         private readonly DataContext _ctx;
         private readonly LotRepository _lotRepository;
         private readonly User _user;
+        private readonly IMapper _mapper;
         public LotRepositoryTests()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                   .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
-            _lotRepository = new LotRepository(_ctx);
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitMapper(out _mapper);
+            PrepareTestsData.InitUserInDb(_ctx, out _user);
+           
+            _lotRepository = new LotRepository(_ctx, _mapper);
         }
         [Fact]
         public async Task LotRepostory_ShouldReturnCreatedLotFromDb()
@@ -35,8 +31,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(createdLot);
             Assert.Equal("USD", createdLot.Currency);
-
-            Dispose();
         }
 
         [Fact]
@@ -47,8 +41,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             lot.Currency = null;
             //assert
             await Assert.ThrowsAsync<DbUpdateException>(async () => await _lotRepository.CreateLotAsync(lot));
-
-            Dispose();
         }
 
         [Fact]
@@ -64,7 +56,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(updatedLot);
             Assert.NotEqual(previousPrice, updatedLot.Price);
-            Dispose();
         }
 
         [Fact]
@@ -79,8 +70,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(deletedLot);
             Assert.Null(findDeletedLot);
-
-            Dispose();
         }
 
         [Fact]
@@ -91,8 +80,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             await Assert.ThrowsAsync<ArgumentNullException>
                 (async () => await _lotRepository.DeleteLotAsync(nonExistingLotId));
-
-            Dispose();
         }
 
         [Fact]
@@ -105,8 +92,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             var foundedLot = await _lotRepository.GetLotAsync(createdLot.Id);
             //assert
             Assert.NotNull(foundedLot);
-
-            Dispose();
         }
 
         [Fact]
@@ -118,8 +103,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             var foundedLot = await _lotRepository.GetLotAsync(nonExistId);
             //assert
             Assert.Null(foundedLot);
-
-            Dispose();
         }
         [Fact]
         public async Task LotRepository_ShouldReturnAllLotsFromDb()
@@ -132,8 +115,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(foundedLots);
             Assert.IsAssignableFrom<ICollection<Lot>>(foundedLots);
-
-            Dispose();
         }
         public Lot prepareLotData()
         {

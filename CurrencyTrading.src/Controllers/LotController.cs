@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
@@ -13,11 +12,13 @@ namespace CurrencyTrading.Controllers
     public class LotController : ControllerBase
     {
         private readonly ILotService _lotService;
-        private readonly IIntegrationService _integrationService;
-        public LotController(ILotService lotService, IIntegrationService integrationService)
+        private readonly ICurrencyService _integrationService;
+        private readonly IAuthService _authService;
+        public LotController(ILotService lotService, ICurrencyService integrationService, IAuthService authService)
         {
             _lotService = lotService;
             _integrationService = integrationService;
+            _authService = authService;
         }
 
         [Authorize]
@@ -32,7 +33,7 @@ namespace CurrencyTrading.Controllers
         [HttpGet("getLots")]
         public async Task<IActionResult> GetLots()
         {
-            int userId = GetCurrentUserId.GetUserId(User.Claims);
+            int userId = _authService.GetUserId(User.Claims);
             var lots = await _lotService.GetLots();
             return Ok(lots);
         }
@@ -44,7 +45,7 @@ namespace CurrencyTrading.Controllers
             try
             {
                 await _integrationService.CheckCurrencyExist(lot.Currency);
-                int userId = GetCurrentUserId.GetUserId(User.Claims);
+                int userId = _authService.GetUserId(User.Claims);
                 var updatedLot = await _lotService.UpdateLot(id, lot, userId);
                 return Ok(updatedLot);
             }
@@ -76,7 +77,7 @@ namespace CurrencyTrading.Controllers
             try
             {
                 await _integrationService.CheckCurrencyExist(lot.Currency);
-                int userId = GetCurrentUserId.GetUserId(User.Claims);
+                int userId = _authService.GetUserId(User.Claims);
                 var createdLot = await _lotService.CreateLot(userId, lot);
                 return Ok(createdLot);
             }

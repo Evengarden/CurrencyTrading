@@ -1,4 +1,5 @@
-﻿using CurrencyTrading.DAL.DTO;
+﻿using AutoMapper;
+using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
@@ -14,14 +15,17 @@ namespace CurrencyTrading.services.Services
 {
     public class TradeService : ITradeService
     {
-        public readonly ITradeRepository _tradeRepository;
-        public readonly IUserRepository _userRepository;
-        public readonly ILotRepository _lotRepository;
-        public TradeService(ITradeRepository tradeRepository, IUserRepository userRepository, ILotRepository lotRepository)
+        private readonly ITradeRepository _tradeRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ILotRepository _lotRepository;
+        private readonly IMapper _mapper;
+
+        public TradeService(ITradeRepository tradeRepository, IUserRepository userRepository, ILotRepository lotRepository, IMapper mapper)
         {
             _tradeRepository = tradeRepository;
             _userRepository = userRepository;
             _lotRepository = lotRepository;
+            _mapper = mapper;
 
         }
         public async Task<Trade> CreateTrade(TradeDTO tradeDTO, int userId)
@@ -40,7 +44,7 @@ namespace CurrencyTrading.services.Services
             var userLots = user.Lots.ToList();
             if (lot.Type == Types.Sold)
             {
-                CheckBalances.CheckEnoughBalanceForBuy(user, userLots, DtoConvert.LotToDto(lot));
+                CheckBalances.CheckEnoughBalanceForBuy(user, userLots,_mapper.Map<LotDTO>(lot));
                
                 userBalance.Amount = userBalance.Amount + lot.CurrencyAmount;
                 mainUserBalance.Amount = mainUserBalance.Amount - lot.Price;
@@ -51,7 +55,7 @@ namespace CurrencyTrading.services.Services
             }
             else
             {
-                CheckBalances.CheckEnoughBalanceForSold(user, userLots, DtoConvert.LotToDto(lot));
+                CheckBalances.CheckEnoughBalanceForSold(user, userLots, _mapper.Map<LotDTO>(lot));
 
                 userBalance.Amount = userBalance.Amount - lot.CurrencyAmount;
                 mainUserBalance.Amount = mainUserBalance.Amount + lot.Price;

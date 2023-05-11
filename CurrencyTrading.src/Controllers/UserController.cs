@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Helpers;
@@ -16,9 +15,11 @@ namespace CurrencyTrading.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IAuthService _authService;
+        public UserController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpPost("registration")]
@@ -57,7 +58,7 @@ namespace CurrencyTrading.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserAsync()
         {
-            int userId = GetCurrentUserId.GetUserId(User.Claims);
+            int userId = _authService.GetUserId(User.Claims);
             var user = await _userService.GetCurrentUser(userId);
 
             if (user == null)
@@ -74,7 +75,7 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
-                int userId = GetCurrentUserId.GetUserId(User.Claims);
+                int userId = _authService.GetUserId(User.Claims);
                 var updatedUser = await _userService.UpdateUser(userId, user);
                 return Ok(updatedUser);
             }

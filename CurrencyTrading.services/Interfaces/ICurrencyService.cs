@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace CurrencyTrading.services.Interfaces
 {
-    public interface IIntegrationService
+    public interface ICurrencyService
     {
-        Task<ICollection<CurrencyDTO>> GetCurrencyFromRedis();
+        Task<ICollection<CurrencyDTO>> GetCurrency();
         Task<decimal> CalculateLotPrice(string currency, decimal currencyAmount);
         Task<string?> CheckCurrencyExist(string currency);
     }

@@ -1,4 +1,6 @@
-﻿using CurrencyTrading.DAL.DTO;
+﻿using CurrencyTradig.CbClient.Interfaces;
+using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.DAL.Interfaces;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
@@ -11,21 +13,23 @@ using System.Xml.Linq;
 namespace CurrencyTrading.services.Services
 {
   
-    public class IntegrationService : IIntegrationService, IJob
+    public class CurrencyService : ICurrencyService, IJob
     {
-        public readonly IDistributedCache _cache;
-        public IntegrationService(IDistributedCache distributedCache)
+        public readonly ICurrencyRepository _currencyRepository;
+        public readonly ICbApiClient _cb;
+        public CurrencyService(ICurrencyRepository currencyRepository, ICbApiClient cb)
         {
-            _cache = distributedCache;
+            _currencyRepository = currencyRepository;
+            _cb = cb;
         }
-        public async Task<ICollection<CurrencyDTO>> GetCurrencyFromRedis()
+        public async Task<ICollection<CurrencyDTO>> GetCurrency()
         {
-            var codes = await _cache.GetStringAsync("codes");
+            var codes = await _currencyRepository.GetCurrencyCodes();
             var codesArr = codes.Split(",");
             List<CurrencyDTO> currencies = new List<CurrencyDTO>();
             foreach (var code in codesArr)
             {
-                var currency = await _cache.GetStringAsync(code);
+                var currency = await _currencyRepository.GetCurrency(code);
                 var currencyDeserialize = JsonConvert.DeserializeObject<CurrencyDTO>(currency);
                 currencies.Add(currencyDeserialize);
             }
@@ -36,7 +40,7 @@ namespace CurrencyTrading.services.Services
         {
             try
             {
-                await SendRequestToCB();
+                await CacheCurrency();
             }
             catch (Exception ex)
             {
@@ -47,20 +51,10 @@ namespace CurrencyTrading.services.Services
             }
         }
 
-        private async Task SendRequestToCB()
+        private async Task CacheCurrency()
         {
-            var client = new RestClient("http://www.cbr.ru/scripts/XML_daily.asp");
-
-            var request = new RestRequest();
-
-            var response = await client.GetAsync(request);
-            var xElement = XElement.Parse(response.Content);
-
-            var currencies = DtoConvert.XmlToCurrencyDTO(xElement);
+            var currencies = await _cb.sendRequestToCb();
             List<string> currencyCodes = new List<string>();
-            var options = new DistributedCacheEntryOptions()
-                        .SetAbsoluteExpiration(DateTime.Now.AddHours(24))
-                        .SetSlidingExpiration(TimeSpan.FromHours(24));
             foreach (var currency in currencies)
             {
                 var currencyJson = JsonConvert.SerializeObject(new
@@ -69,10 +63,10 @@ namespace CurrencyTrading.services.Services
                     CurrencyNominal = currency.CurrencyNominal.ToString(),
                     CurrencyPrice = currency.CurrencyPrice.ToString()
                 });
-                await _cache.SetStringAsync(currency.CurrencyCode, currencyJson, options);
+                await _currencyRepository.SetCurrency(currency.CurrencyCode, currencyJson);
                 currencyCodes.Add(currency.CurrencyCode.ToString());
             }
-            await _cache.SetStringAsync("codes", string.Join(",", currencyCodes));
+            await _currencyRepository.SetCurrencyCodes(currencyCodes);
         }
         public async Task<decimal> CalculateLotPrice(string currency, decimal currencyAmount)
         {
@@ -84,7 +78,7 @@ namespace CurrencyTrading.services.Services
 
         public async Task<string?> CheckCurrencyExist(string currency)
         {
-            var currencyFromRedis = await _cache.GetStringAsync(currency);
+            var currencyFromRedis = await _currencyRepository.GetCurrency(currency);
             if(currencyFromRedis == null)
             {
                 throw new CurrencyNotFound 

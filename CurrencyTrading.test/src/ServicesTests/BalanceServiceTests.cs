@@ -1,6 +1,5 @@
 ﻿using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Services;
@@ -24,16 +23,8 @@ namespace CurrencyTrading.test.src.ServicesTests
 
         public BalanceServiceTests()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx,out _user);
             _userRepository = new Mock<IUserRepository>();
             _balanceRepository = new Mock<IBalanceRepository>();
             _balanceService = new BalanceService(_balanceRepository.Object, _userRepository.Object);

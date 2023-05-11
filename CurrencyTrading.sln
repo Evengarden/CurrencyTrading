@@ -8,8 +8,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.test", "CurrencyTrading.test\CurrencyTrading.test.csproj", "{49D7B209-E33F-4578-83DA-262A35504E5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.services", "CurrencyTrading.Services\CurrencyTrading.services.csproj", "{0933085B-4808-46BC-A2ED-30EB6747D95F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F09CF3BC-D235-4154-9097-536E8FA59EF8} = {F09CF3BC-D235-4154-9097-536E8FA59EF8}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.DAL", "CurrencyTrading.DAL\CurrencyTrading.DAL.csproj", "{BD7FD109-6CEE-49FA-B363-1DA9EAAE4997}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTradig.CbClient", "CurrencyTradig.CbClient\CurrencyTradig.CbClient.csproj", "{F09CF3BC-D235-4154-9097-536E8FA59EF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{BD7FD109-6CEE-49FA-B363-1DA9EAAE4997}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD7FD109-6CEE-49FA-B363-1DA9EAAE4997}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD7FD109-6CEE-49FA-B363-1DA9EAAE4997}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F09CF3BC-D235-4154-9097-536E8FA59EF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F09CF3BC-D235-4154-9097-536E8FA59EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F09CF3BC-D235-4154-9097-536E8FA59EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F09CF3BC-D235-4154-9097-536E8FA59EF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,43 +1,34 @@
 ﻿using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.RepositoryTests
 {
-    public class TradeRepositoryTests : IDisposable
+    public class TradeRepositoryTests
     {
         private readonly DataContext _ctx;
         private readonly TradeRepository _tradeRepository;
         private readonly User _buyer;
+        private readonly User _owner;
         private readonly Lot _lot;
 
         public TradeRepositoryTests()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                   .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                   .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            var user1 = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            });
-            _buyer = _ctx.Users.Add(new User
-            {
-                Login = "test2",
-                Password = HashPassword.HashPass("test2")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx,out _buyer);
+
+            PrepareTestsData.InitUserInDb(_ctx, out _owner);
+
             _lot = _ctx.Lots.Add(new Lot
             {
                 Currency = "USD",
                 CurrencyAmount = 10,
                 Status = 0,
                 Price = 100,
-                OwnerId = user1.Entity.Id
+                OwnerId = _owner.Id
             }).Entity;
             _tradeRepository = new TradeRepository(_ctx);
         }
@@ -52,8 +43,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(createdTrade);
             Assert.Equal(_buyer.Id, createdTrade.Buyer.Id);
-
-            Dispose();
         }
 
         [Fact]
@@ -66,8 +55,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             var foundedTrade = await _tradeRepository.GetTradeAsync(createdTrade.Id);
             //assert
             Assert.NotNull(foundedTrade);
-
-            Dispose();
         }
 
         [Fact]
@@ -79,8 +66,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             var foundedTrade = await _tradeRepository.GetTradeAsync(nonExistId);
             //assert
             Assert.Null(foundedTrade);
-
-            Dispose();
         }
 
         [Fact]
@@ -94,8 +79,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(foundedTrades);
             Assert.IsAssignableFrom<ICollection<Trade>>(foundedTrades);
-
-            Dispose();
         }
 
 
@@ -108,10 +91,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
                 LotId = _lot.Id
             };
             return trade;
-        }
-        public void Dispose()
-        {
-            _ctx.Dispose();
         }
     }
 }
