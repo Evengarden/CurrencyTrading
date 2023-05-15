@@ -12,6 +12,8 @@ using System.Text;
 using CurrencyTrading.DAL.Mapping;
 using CurrencyTrading.DAL.Repository;
 using CurrencyTrading.DAL.Interfaces;
+using CurrencyTrading.Client.Interfaces;
+using CurrencyTrading.Client;
 
 namespace CurrencyTrading
 {
@@ -45,6 +47,8 @@ namespace CurrencyTrading
             services.AddScoped<ITradeService, TradeService>();
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICbApiClient, CbClient>();
+            services.AddScoped<ICustomMapper, CustomMapper>();
 
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = "redis:6379,abortConnect=false";

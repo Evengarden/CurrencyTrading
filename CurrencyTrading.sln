@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.services", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.DAL", "CurrencyTrading.DAL\CurrencyTrading.DAL.csproj", "{BD7FD109-6CEE-49FA-B363-1DA9EAAE4997}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.CbClient", "CurrencyTradig.CbClient\CurrencyTrading.CbClient.csproj", "{F09CF3BC-D235-4154-9097-536E8FA59EF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTrading.Client", "CurrencyTradig.Client\CurrencyTrading.Client.csproj", "{F09CF3BC-D235-4154-9097-536E8FA59EF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

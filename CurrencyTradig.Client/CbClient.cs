@@ -1,9 +1,9 @@
-﻿using CurrencyTrading.CbClient.Interfaces;
+﻿using CurrencyTrading.Client.Interfaces;
 using CurrencyTrading.DAL.DTO;
 using RestSharp;
 using System.Xml.Linq;
 
-namespace CurrencyTrading.CbClient
+namespace CurrencyTrading.Client
 {
     public class CbClient : ICbApiClient
     {

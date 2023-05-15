@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
-namespace CurrencyTrading.CbClient.Interfaces
+namespace CurrencyTrading.Client.Interfaces
 {
-    public interface ICustomMapper
+    public interface ICbApiClient
     {
-        ICollection<CurrencyDTO> XmlToDto(XElement xElement);
+        Task<ICollection<CurrencyDTO>> sendRequestToCb();
     }
 }
