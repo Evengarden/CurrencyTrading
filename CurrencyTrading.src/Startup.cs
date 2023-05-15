@@ -35,11 +35,11 @@ namespace CurrencyTrading
 
             services.AddAutoMapper(typeof(AppMappingProfiles));
 
-            services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<ILotRepository, LotRepository>();
-            services.AddTransient<ITradeRepository, TradeRepository>();
-            services.AddTransient<IBalanceRepository, BalanceRepository>();
-            services.AddTransient<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ILotRepository, LotRepository>();
+            services.AddScoped<ITradeRepository, TradeRepository>();
+            services.AddScoped<IBalanceRepository, BalanceRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBalanceService, BalanceService>();
@@ -56,7 +56,7 @@ namespace CurrencyTrading
 
             services.AddQuartz(q =>
             {
-                q.UseMicrosoftDependencyInjectionScopedJobFactory();
+                q.UseMicrosoftDependencyInjectionJobFactory();
                 var getCurrencyJobKey = new JobKey("GetCurrencyFromCb");
                 q.AddJob<CurrencyService>(opts => opts.WithIdentity(getCurrencyJobKey));
 

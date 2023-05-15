@@ -37,7 +37,6 @@ namespace CurrencyTrading.Controllers
 
                 return BadRequest(e.Message);
             }
-            
         }
     }
 }

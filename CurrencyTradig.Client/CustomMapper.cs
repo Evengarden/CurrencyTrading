@@ -11,7 +11,7 @@ namespace CurrencyTrading.Client
 {
     public class CustomMapper : ICustomMapper
     {
-        public ICollection<CurrencyDTO> XmlToDto(XElement xElement)
+        public ICollection<CurrencyDTO> CurrencyXmlToDto(XElement xElement)
         {
             List<CurrencyDTO> currencyDTOs = new List<CurrencyDTO>();
 
@@ -19,9 +19,9 @@ namespace CurrencyTrading.Client
             {
                 currencyDTOs.Add(new CurrencyDTO
                 {
-                    CurrencyCode = element.Element("CharCode").Value,
-                    CurrencyNominal = int.Parse(element.Element("Nominal").Value),
-                    CurrencyPrice = Convert.ToDecimal(element.Element("Value").Value.Replace(",", "."))
+                    CurrencyCode = element.Element("CharCode")!.Value,
+                    CurrencyNominal = int.Parse(element.Element("Nominal")!.Value),
+                    CurrencyPrice = Convert.ToDecimal(element.Element("Value")!.Value.Replace(",", "."))
 
                 });
             }

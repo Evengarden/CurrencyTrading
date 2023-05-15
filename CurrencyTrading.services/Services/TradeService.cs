@@ -2,6 +2,7 @@
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
 
@@ -26,8 +27,15 @@ namespace CurrencyTrading.services.Services
         {
             var user = await _userRepository.GetUserAsync(userId);
             var lot = await _lotRepository.GetLotAsync(tradeDTO.LotId);
+            if(lot is null)
+            {
+                throw new LotNotFound();
+            }
             var owner = await _userRepository.GetUserAsync(lot.Owner.Id);
-
+            if (user.Id == owner.Id)
+            {
+                throw new OwnerIsBuyer();
+            }
 
             var userBalance = user.Balance.FirstOrDefault(b => b.Currency == lot.Currency);
             var mainUserBalance = user.Balance.FirstOrDefault(b => b.Currency == "RUB");
@@ -39,7 +47,6 @@ namespace CurrencyTrading.services.Services
             if (lot.Type == Types.Sold)
             {
                 CheckBalances.CheckEnoughBalanceForBuy(user, userLots,_mapper.Map<LotDTO>(lot));
-               
                 userBalance.Amount = userBalance.Amount + lot.CurrencyAmount;
                 mainUserBalance.Amount = mainUserBalance.Amount - lot.Price;
 
@@ -75,6 +82,10 @@ namespace CurrencyTrading.services.Services
         public async Task<Trade> GetTrade(int tradeId)
         {
             var trade = await _tradeRepository.GetTradeAsync(tradeId);
+            if (trade is null)
+            {
+                throw new TradeNotFound();
+            } 
             return trade;
         }
 

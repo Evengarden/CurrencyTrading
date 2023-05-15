@@ -36,7 +36,8 @@ namespace CurrencyTrading.services.Helpers
             {
                 throw new BalanceDoesNotExist
                 {
-                    Currency = lot.Currency
+                    Currency = lot.Currency,
+                    Username = user.Login
                 };
             }
         }
@@ -60,6 +61,14 @@ namespace CurrencyTrading.services.Helpers
                         SumOfLotForBuy = lot.Price + userLotsSumOfBuy
                     };
                 }
+            }
+            else
+            {
+                throw new BalanceDoesNotExist
+                {
+                    Currency = lot.Currency,
+                    Username = user.Login
+                };
             }
         }
     }

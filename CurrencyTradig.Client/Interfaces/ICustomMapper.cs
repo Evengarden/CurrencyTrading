@@ -10,6 +10,6 @@ namespace CurrencyTrading.Client.Interfaces
 {
     public interface ICustomMapper
     {
-        ICollection<CurrencyDTO> XmlToDto(XElement xElement);
+        ICollection<CurrencyDTO> CurrencyXmlToDto(XElement xElement);
     }
 }

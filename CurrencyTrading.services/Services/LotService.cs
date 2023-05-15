@@ -51,6 +51,10 @@ namespace CurrencyTrading.services.Services
         public async Task<Lot> DeleteLot(int lotId)
         {
             var currentLot = await _lotRepository.GetLotAsync(lotId);
+            if(currentLot is null)
+            {
+                throw new LotNotFound();
+            }
             if (currentLot.Status != Statuses.Solded)
             {
                 var lot = await _lotRepository.DeleteLotAsync(lotId);
@@ -64,7 +68,12 @@ namespace CurrencyTrading.services.Services
 
         public async Task<Lot> GetLot(int lotId)
         {
-            return await _lotRepository.GetLotAsync(lotId);
+            var lot = await _lotRepository.GetLotAsync(lotId);
+            if (lot is null)
+            {
+                throw new LotNotFound();
+            }
+            return lot;
         }
 
         public async Task<ICollection<Lot>> GetLots()
@@ -74,6 +83,13 @@ namespace CurrencyTrading.services.Services
 
         public async Task<Lot> UpdateLot(int lotId,LotDTO lot,int userId)
         {
+            var updatedLot = await _lotRepository.GetLotAsync(lotId);
+
+            if (updatedLot is null)
+            {
+                throw new LotNotFound();
+            }
+
             var user = await _userRepository.GetUserAsync(userId);
             var userLots = user.Lots.ToList();
             if (lot.Type == Types.Sold)
@@ -84,7 +100,6 @@ namespace CurrencyTrading.services.Services
             {
                 CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
             }
-            var updatedLot = await _lotRepository.GetLotAsync(lotId);
 
             var newLot = UpdateEntityHelper.updateEntity(lot,updatedLot);
             if (updatedLot.Status == Statuses.Solded) 

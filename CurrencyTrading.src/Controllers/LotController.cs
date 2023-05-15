@@ -25,8 +25,15 @@ namespace CurrencyTrading.Controllers
         [HttpGet("lot/{id:int}")]
         public async Task<IActionResult> GetLot(int id)
         {
-            var lot = await _lotService.GetLot(id);
-            return Ok(lot);
+            try
+            {
+                var lot = await _lotService.GetLot(id);
+                return Ok(lot);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]

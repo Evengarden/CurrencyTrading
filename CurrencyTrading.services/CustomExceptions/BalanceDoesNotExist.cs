@@ -9,7 +9,8 @@ namespace CurrencyTrading.services.CustomExceptions
     public class BalanceDoesNotExist : InvalidOperationException
     {
         public string Currency { get; init; }
+        public string Username { get; init; }
         public override string Message =>
-            $"Cannot create sold lot. User have not currency:{Currency} on his balance ";
+            $"Error. User {Username} have not currency:{Currency} on his balance ";
     }
 }

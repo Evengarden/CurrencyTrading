@@ -21,7 +21,7 @@ namespace CurrencyTrading.Client
 
             var response = await client.GetAsync(request);
             var xElement = XElement.Parse(response.Content);
-            var currencies = _customMapper.XmlToDto(xElement);
+            var currencies = _customMapper.CurrencyXmlToDto(xElement);
 
             return currencies;
         }
