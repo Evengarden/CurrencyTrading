@@ -24,11 +24,10 @@ namespace CurrencyTrading.services.Services
             var findedUser = await _userRepository.GetUserByLogin(user.Login);
             if (findedUser != null)
             {
-                bool isAuth = _authService.VerifyPass(user.Password, findedUser.Password);
+                bool isAuth = _authService.VerifyPass(findedUser.Password, user.Password);
                 if (isAuth)
                 {
                     var token = _authService.GenerateJwtToken(findedUser);
-                    Console.WriteLine(token);
                     return token;
                 }
             }

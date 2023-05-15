@@ -2,14 +2,8 @@
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
-using CurrencyTrading.Repository;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyTrading.services.Services
 {
