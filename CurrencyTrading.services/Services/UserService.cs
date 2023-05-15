@@ -22,13 +22,16 @@ namespace CurrencyTrading.services.Services
         public async Task<string?> Auth(UserDTO user)
         {
             var findedUser = await _userRepository.GetUserByLogin(user.Login);
-            bool isAuth = _authService.VerifyPass(user.Password, findedUser.Password);
-            if (isAuth)
+            if (findedUser != null)
             {
-                var token = _authService.GenerateJwtToken(findedUser);
-                return token;
+                bool isAuth = _authService.VerifyPass(user.Password, findedUser.Password);
+                if (isAuth)
+                {
+                    var token = _authService.GenerateJwtToken(findedUser);
+                    Console.WriteLine(token);
+                    return token;
+                }
             }
-
             throw new UserNotFound();
         }
 

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CurrencyTradig.CbClient\CurrencyTradig.CbClient.csproj" />
+    <ProjectReference Include="..\CurrencyTradig.CbClient\CurrencyTrading.CbClient.csproj" />
     <ProjectReference Include="..\CurrencyTrading.DAL\CurrencyTrading.DAL.csproj" />
   </ItemGroup>
 

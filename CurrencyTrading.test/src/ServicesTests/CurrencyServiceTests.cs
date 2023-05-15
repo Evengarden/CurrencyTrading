@@ -1,4 +1,4 @@
-﻿using CurrencyTradig.CbClient.Interfaces;
+﻿using CurrencyTrading.CbClient.Interfaces;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.DAL.Interfaces;
 using CurrencyTrading.Data;

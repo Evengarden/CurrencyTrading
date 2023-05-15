@@ -39,11 +39,12 @@ namespace CurrencyTrading
             services.AddTransient<IBalanceRepository, BalanceRepository>();
             services.AddTransient<ICurrencyRepository, CurrencyRepository>();
 
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IBalanceService, BalanceService>();
-            services.AddTransient<ILotService, LotService>();
-            services.AddTransient<ITradeService, TradeService>();
-            services.AddTransient<ICurrencyService, CurrencyService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBalanceService, BalanceService>();
+            services.AddScoped<ILotService, LotService>();
+            services.AddScoped<ITradeService, TradeService>();
+            services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = "redis:6379,abortConnect=false";

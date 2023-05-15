@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CurrencyTradig.CbClient.Interfaces
+namespace CurrencyTrading.CbClient.Interfaces
 {
     public interface ICbApiClient
     {
