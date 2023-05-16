@@ -49,6 +49,7 @@ namespace CurrencyTrading
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICbApiClient, CbClient>();
             services.AddScoped<ICustomMapper, CustomMapper>();
+            services.AddScoped<IBalanceCalculationService, BalanceCalculationService>();
 
             services.AddStackExchangeRedisCache(options => {
                 options.Configuration = "redis:6379,abortConnect=false";
