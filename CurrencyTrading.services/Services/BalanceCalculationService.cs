@@ -4,8 +4,10 @@ using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,26 +22,26 @@ namespace CurrencyTrading.services.Services
             _balanceRepository = balanceRepository;
         }
 
-        public async Task<User> CalculateBalance(User user, Lot lot)
+        public async Task<User> CalculateBalance(User buyer, User lotOwner, Lot lot)
         {
-            if (user.Id == lot.Owner.Id)
+            if (buyer.Id == lot.Owner.Id)
             {
                 throw new OwnerIsBuyer();
             }
-            var userBalance = user.Balance.SingleOrDefault(b => b.Currency == lot.Currency);
+            var userBalance = buyer.Balance.SingleOrDefault(b => b.Currency == lot.Currency);
             if(userBalance is null)
             {
                 Balance balance = new Balance
                 {
                     Currency = lot.Currency,
                     Amount = 0,
-                    User = user
+                    User = buyer
                 };
                 userBalance = await _balanceRepository.CreateBalanceAsync(balance);
+                buyer.Balance.Add(userBalance);
             }
-            var mainUserBalance = user.Balance.SingleOrDefault(b => b.Currency == "RUB");
-
-            var ownerBalance = lot.Owner?.Balance?.SingleOrDefault(b => b.Currency == lot.Currency);
+            var mainUserBalance = buyer.Balance.SingleOrDefault(b => b.Currency == "RUB");
+            var ownerBalance = lotOwner.Balance.SingleOrDefault(b => b.Currency == lot.Currency);
             var mainOwnerBalance = lot.Owner?.Balance?.SingleOrDefault(b => b.Currency == "RUB");
             if (lot.Type == Types.Sold)
             {
@@ -48,6 +50,7 @@ namespace CurrencyTrading.services.Services
 
                 ownerBalance.Amount = ownerBalance.Amount - lot.CurrencyAmount;
                 mainOwnerBalance.Amount = mainOwnerBalance.Amount + lot.Price;
+
             }
             else
             {
@@ -58,7 +61,7 @@ namespace CurrencyTrading.services.Services
                 mainOwnerBalance.Amount = mainOwnerBalance.Amount - lot.Price;
 
             }
-            return user;
+            return buyer;
         }
         public Balance CheckEnoughBalanceForBuy(User user, Lot lot)
         {

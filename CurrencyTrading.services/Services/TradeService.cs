@@ -25,26 +25,27 @@ namespace CurrencyTrading.services.Services
         }
         public async Task<Trade> CreateTrade(TradeDTO tradeDTO, int userId)
         {
-            var user = await _userRepository.GetUserAsync(userId);
+            var buyer = await _userRepository.GetUserAsync(userId);
             var lot = await _lotRepository.GetLotAsync(tradeDTO.LotId);
+            var owner = await _userRepository.GetUserAsync(lot.Owner.Id);
             if (lot is null)
             {
                 throw new LotNotFound();
             }
             if (lot.Type == Types.Sold)
             {
-                _balanceCalculationService.CheckEnoughBalanceForBuy(user, lot);
+                _balanceCalculationService.CheckEnoughBalanceForBuy(buyer, lot);
             }
             else
             {
-                _balanceCalculationService.CheckEnoughBalanceForSold(user, lot);
+                _balanceCalculationService.CheckEnoughBalanceForSold(buyer, lot);
             }
-            var updatedBalanceUser = await _balanceCalculationService.CalculateBalance(user, lot);
+            var updatedBalanceUser = await _balanceCalculationService.CalculateBalance(buyer, owner, lot);
             var trade = new Trade
             {
                 TradeDate = DateTime.Now,
                 LotId = tradeDTO.LotId,
-                BuyerId = user.Id,
+                BuyerId = buyer.Id,
                 Buyer = updatedBalanceUser,
                 TradeLot = lot
             };
