@@ -9,11 +9,9 @@ namespace CurrencyTrading.Repository
     public class LotRepository : ILotRepository
     {
         private readonly DataContext _ctx;
-        private readonly IMapper _mapper;
-        public LotRepository(DataContext context, IMapper mapper)
+        public LotRepository(DataContext context)
         {
             _ctx = context;
-            _mapper = mapper;
         }
 
         public async Task<Lot> CreateLotAsync(Lot lot)

@@ -19,11 +19,6 @@ namespace CurrencyTrading.test.src
             ctx.Database.EnsureCreated();
             
         }
-        internal static void InitMapper(out IMapper mapper)
-        {
-            var cfg = new MapperConfiguration(cfg => cfg.AddProfile<AppMappingProfiles>());
-            mapper = new Mapper(cfg);
-        }
         internal static void InitUserInDb(DataContext ctx, out User user)
         {
             user = ctx.Users.Add(new User

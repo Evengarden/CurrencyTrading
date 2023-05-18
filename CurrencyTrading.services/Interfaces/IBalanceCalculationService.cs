@@ -9,8 +9,8 @@ namespace CurrencyTrading.services.Interfaces
 {
     public interface IBalanceCalculationService
     {
-        public Balance CheckEnoughBalanceForSold(User user, Lot lot);
-        public Balance CheckEnoughBalanceForBuy(User user, Lot lot);
+        public void CheckEnoughBalanceForSold(User user, Lot lot);
+        public void CheckEnoughBalanceForBuy(User user, Lot lot);
         public Task<User> CalculateBalance(User buyer,User lotOwner, Lot lot);
     }
 }

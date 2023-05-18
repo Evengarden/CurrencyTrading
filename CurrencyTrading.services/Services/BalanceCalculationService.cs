@@ -63,7 +63,7 @@ namespace CurrencyTrading.services.Services
             }
             return buyer;
         }
-        public Balance CheckEnoughBalanceForBuy(User user, Lot lot)
+        public void CheckEnoughBalanceForBuy(User user, Lot lot)
         {
             var userBalance = user.Balance.FirstOrDefault(b =>
             {
@@ -84,18 +84,9 @@ namespace CurrencyTrading.services.Services
                     };
                 }
             }
-            else
-            {
-                throw new BalanceDoesNotExist
-                {
-                    Currency = lot.Currency,
-                    Username = user.Login
-                };
-            }
-            return userBalance;
         }
 
-        public Balance CheckEnoughBalanceForSold(User user, Lot lot)
+        public void CheckEnoughBalanceForSold(User user, Lot lot)
         {
             var userBalance = user.Balance.FirstOrDefault(b =>
             {
@@ -116,15 +107,6 @@ namespace CurrencyTrading.services.Services
                     };
                 }
             }
-            else
-            {
-                throw new BalanceDoesNotExist
-                {
-                    Currency = lot.Currency,
-                    Username = user.Login
-                };
-            }
-            return userBalance;
         }
     }
 }

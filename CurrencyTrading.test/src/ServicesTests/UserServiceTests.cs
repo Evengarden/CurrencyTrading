@@ -106,8 +106,41 @@ namespace CurrencyTrading.test.src.ServicesTests
             //act
             var updatedUser = await _userService.UpdateUser(_user.Id,user);
             //assert
+            Assert.NotNull(updatedUser);
             Assert.Equal(updatedUser.Login,user.Login);
             Assert.Equal(updatedUser.Password,user.Password);
+        }
+
+        public async Task UpdateUser_ShouldReturnUpdatedTestUser_AssertLoginEquals()
+        {
+            //arrange
+            _userRepository.Setup(u => u.GetUserAsync(_user.Id)).ReturnsAsync(_user);
+            _userRepository.Setup(u => u.UpdateUserAsync(_user.Id, _user)).ReturnsAsync(_user);
+            UserDTO user = new UserDTO
+            {
+                Login = "new login",
+                Password = "new password"
+            };
+            //act
+            var updatedUser = await _userService.UpdateUser(_user.Id, user);
+            //assert
+            Assert.Equal(updatedUser.Login, user.Login);
+        }
+
+        public async Task UpdateUser_ShouldReturnUpdatedTestUser_AssertPasswordEquals()
+        {
+            //arrange
+            _userRepository.Setup(u => u.GetUserAsync(_user.Id)).ReturnsAsync(_user);
+            _userRepository.Setup(u => u.UpdateUserAsync(_user.Id, _user)).ReturnsAsync(_user);
+            UserDTO user = new UserDTO
+            {
+                Login = "new login",
+                Password = "new password"
+            };
+            //act
+            var updatedUser = await _userService.UpdateUser(_user.Id, user);
+            //assert
+            Assert.Equal(updatedUser.Password, user.Password);
         }
 
         [Fact]
@@ -128,7 +161,7 @@ namespace CurrencyTrading.test.src.ServicesTests
         }
 
         [Fact]
-        public async Task UserRegistration_ShouldReturnNewUser()
+        public async Task UserRegistration_ShouldReturnNotNullNewUser()
         {
             //arrange
             User newUser = new User
@@ -143,6 +176,23 @@ namespace CurrencyTrading.test.src.ServicesTests
             await _userService.UserRegistration(newUser);
             //assert
             Assert.NotNull(newUser);
+        }
+
+        [Fact]
+        public async Task UserRegistration_ShouldReturnNewUserWithNotEmptyBalance()
+        {
+            //arrange
+            User newUser = new User
+            {
+                Login = "new user",
+                Password = "new password",
+
+            };
+            _balanceRepository.Setup(b => b.CreateBalanceAsync(It.IsAny<Balance>())).
+                Callback<Balance>(c => newUser.Balance = new Balance[] { c }).ReturnsAsync((Balance balance) => balance);
+            //act
+            await _userService.UserRegistration(newUser);
+            //assert
             Assert.NotEmpty(newUser.Balance);
         }
     }

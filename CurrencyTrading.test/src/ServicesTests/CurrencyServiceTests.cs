@@ -49,23 +49,30 @@ namespace CurrencyTrading.test.src.ServicesTests
         }
 
         [Fact]
-        public async Task GetCurrencyFromRedis_ShouldReturnTestCollection()
+        public async Task GetCurrencyFromRedis_ShouldReturnNotEmptyTestCollection()
         {
             //act
             var result = await _currencyService.GetCurrency();
             //assert
             Assert.NotEmpty(result);
-            Assert.False(result.IsNullOrEmpty());
         }
 
         [Fact]
-        public async Task CheckCurrencyExist_ShouldReturnTestCurrency()
+        public async Task CheckCurrencyExist_ShouldReturnNotNullTestCurrency()
+        {
+            //act
+            var result = await _currencyService.CheckCurrencyExist("AUD");
+            //assert
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task CheckCurrencyExist_ShouldReturnNotEmptyTestCurrency()
         {
             //act
             var result = await _currencyService.CheckCurrencyExist("AUD");
             //assert
             Assert.NotEmpty(result);
-            Assert.NotNull(result);
         }
 
         [Fact]

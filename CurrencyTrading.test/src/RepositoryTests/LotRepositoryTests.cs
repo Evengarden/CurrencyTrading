@@ -12,14 +12,12 @@ namespace CurrencyTrading.test.src.RepositoryTests
         private readonly DataContext _ctx;
         private readonly LotRepository _lotRepository;
         private readonly User _user;
-        private readonly IMapper _mapper;
         public LotRepositoryTests()
         {
             PrepareTestsData.InitDbCtx(out _ctx);
-            PrepareTestsData.InitMapper(out _mapper);
             PrepareTestsData.InitUserInDb(_ctx, out _user);
            
-            _lotRepository = new LotRepository(_ctx, _mapper);
+            _lotRepository = new LotRepository(_ctx);
         }
         [Fact]
         public async Task LotRepostory_ShouldReturnCreatedLotFromDb()

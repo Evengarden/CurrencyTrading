@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Transactions;
 using CurrencyTrading.services.Helpers;
 using CurrencyTrading.DAL.Helpers;
+using AutoMapper;
 
 namespace CurrencyTrading.services.Services
 {
@@ -14,24 +15,28 @@ namespace CurrencyTrading.services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly ILotRepository _lotRepository;
-        public LotService(IUserRepository userRepository, ILotRepository lotRepository)
+        private readonly IBalanceCalculationService _balanceCalculationService;
+        private readonly IMapper _mapper;
+        public LotService(IUserRepository userRepository, ILotRepository lotRepository, 
+            IBalanceCalculationService balanceCalculationService, IMapper mapper)
         {
             _userRepository = userRepository;
             _lotRepository = lotRepository;
+            _balanceCalculationService = balanceCalculationService;
+            _mapper = mapper;
         }
 
         public async Task<Lot> CreateLot(int userId, LotDTO lot)
         {
             var user = await _userRepository.GetUserAsync(userId);
-            var userLots = user.Lots?.ToList();
 
             if (lot.Type == Types.Sold)
             {
-                CheckBalances.CheckEnoughBalanceForSold(user, userLots, lot);
+                _balanceCalculationService.CheckEnoughBalanceForSold(user, _mapper.Map<Lot>(lot));
             }
             else
             {
-                CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
+                _balanceCalculationService.CheckEnoughBalanceForBuy(user, _mapper.Map<Lot>(lot));
             }
             Lot newLot = new Lot 
             {
@@ -91,14 +96,13 @@ namespace CurrencyTrading.services.Services
             }
 
             var user = await _userRepository.GetUserAsync(userId);
-            var userLots = user.Lots.ToList();
             if (lot.Type == Types.Sold)
             {
-                CheckBalances.CheckEnoughBalanceForSold(user, userLots, lot);
+                _balanceCalculationService.CheckEnoughBalanceForSold(user, _mapper.Map<Lot>(lot));
             }
             else
             {
-                CheckBalances.CheckEnoughBalanceForBuy(user, userLots, lot);
+                _balanceCalculationService.CheckEnoughBalanceForBuy(user, _mapper.Map<Lot>(lot));
             }
 
             var newLot = UpdateEntityHelper.updateEntity(lot,updatedLot);
