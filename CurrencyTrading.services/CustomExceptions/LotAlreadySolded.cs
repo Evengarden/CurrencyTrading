@@ -9,6 +9,6 @@ namespace CurrencyTrading.services.CustomExceptions
     public class LotAlreadySolded : InvalidOperationException
     {
         public override string Message =>
-            $"Cannot delete lot. Lot already solded";
+            $"Error. Lot already solded";
     }
 }

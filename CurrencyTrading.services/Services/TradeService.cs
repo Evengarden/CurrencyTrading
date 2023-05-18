@@ -32,6 +32,10 @@ namespace CurrencyTrading.services.Services
             {
                 throw new LotNotFound();
             }
+            if(lot.Status == Statuses.Solded)
+            {
+                throw new LotAlreadySolded();
+            }
             if (lot.Type == Types.Sold)
             {
                 _balanceCalculationService.CheckEnoughBalanceForBuy(buyer, lot);
