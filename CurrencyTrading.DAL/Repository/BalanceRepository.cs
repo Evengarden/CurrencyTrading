@@ -15,6 +15,7 @@ namespace CurrencyTrading.Repository
 
         public async Task<Balance> CreateBalanceAsync(Balance balance)
         {
+
             var createdBalance = await _ctx.Balances.AddAsync(balance);
             await _ctx.SaveChangesAsync();
             return createdBalance.Entity;
@@ -31,14 +32,7 @@ namespace CurrencyTrading.Repository
         public async Task<Balance> UpdateBalanceAsync(int balanceId, Balance balance)
         {
             var currentBalance = await _ctx.Balances.FindAsync(balanceId);
-            //TODO: поправить
-            if (currentBalance.Currency != balance.Currency) {
-                currentBalance.Currency = balance.Currency;
-            }
-            if(currentBalance.Amount != balance.Amount)
-            {
-                currentBalance.Amount = balance.Amount;
-            }
+            currentBalance = balance;
             await _ctx.SaveChangesAsync();
             return currentBalance;
         }

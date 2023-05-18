@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
@@ -9,10 +8,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.RepositoryTests
 {
-    public class BalanceRepositoryTests : IDisposable
+    public class BalanceRepositoryTests
     {
         private readonly BalanceRepository _balanceRepository;
         private readonly DataContext _ctx;
@@ -20,16 +20,8 @@ namespace CurrencyTrading.test.src.RepositoryTests
 
         public BalanceRepositoryTests()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                  .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                  .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx,out _user);
             _balanceRepository = new BalanceRepository(_ctx);
         }
 
@@ -43,8 +35,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(createdBalance);
             Assert.NotNull(createdBalance.User);
-
-            Dispose();
         }
 
         [Fact]
@@ -55,9 +45,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             balance.Currency = null;
             //assert
             await Assert.ThrowsAsync<DbUpdateException>(async () => await _balanceRepository.CreateBalanceAsync(balance));
-
-
-            Dispose();
         }
 
         [Fact]
@@ -73,8 +60,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(updatedBalance);
             Assert.NotEqual(previousAmount, updatedBalance.Amount);
-
-            Dispose();
         }
 
         [Fact]
@@ -89,8 +74,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(deletedBalance);
             Assert.Null(foundedDeletedBalance);
-
-            Dispose();
         }
 
         [Fact]
@@ -101,8 +84,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             await Assert.ThrowsAsync<ArgumentNullException>
                 (async () => await _balanceRepository.DeleteBalanceAsync(nonExistingBalanceId));
-
-            Dispose();
         }
 
         public Balance prepareBalanceData()
@@ -114,11 +95,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
                 UserId = _user.Id
             };
             return balance;
-        }
-
-        public void Dispose()
-        {
-            _ctx.Dispose();
         }
     }
 }

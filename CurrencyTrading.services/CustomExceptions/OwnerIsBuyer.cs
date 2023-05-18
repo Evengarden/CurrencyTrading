@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace CurrencyTrading.services.CustomExceptions
 {
-    public class BalanceDoesNotExist : InvalidOperationException
+    public class OwnerIsBuyer : InvalidOperationException
     {
-        public string Currency { get; init; }
         public override string Message =>
-            $"Cannot create sold lot. User have not currency:{Currency} on his balance ";
+           $"Cannot create trade. You can't buy your own lot";
     }
 }

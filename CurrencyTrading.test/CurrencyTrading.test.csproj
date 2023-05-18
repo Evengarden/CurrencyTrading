@@ -30,7 +30,4 @@
   <ItemGroup>
     <None Remove="src\ControllerTests\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\ControllerTests\" />
-  </ItemGroup>
 </Project>

@@ -3,7 +3,6 @@ using System.Security.Claims;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
@@ -18,27 +17,16 @@ namespace CurrencyTrading.test.src.ControllerTests
 	{
         private readonly TradeController _tradeController;
         private readonly Mock<ITradeService> _tradeService;
+        private readonly Mock<IAuthService> _authService;
         private readonly DataContext _ctx;
         private readonly User _user;
         private readonly User _user2;
         private readonly Lot _lot;
         public TradeControllerTests()
 		{
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
-            _user2 = _ctx.Users.Add(new User
-            {
-                Login = "test1",
-                Password = HashPassword.HashPass("test1")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx,out _user);
+            PrepareTestsData.InitUserInDb(_ctx,out _user2);
             _lot = _ctx.Lots.Add(new Lot
             {
                 Id = 1,
@@ -56,7 +44,8 @@ namespace CurrencyTrading.test.src.ControllerTests
                     new Claim("ID", _user.Id.ToString()),
                 }, "mock"));
             _tradeService = new Mock<ITradeService>();
-            _tradeController = new TradeController(_tradeService.Object);
+            _authService = new Mock<IAuthService>();
+            _tradeController = new TradeController(_tradeService.Object,_authService.Object);
             _tradeController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = claims }

@@ -1,6 +1,8 @@
 ﻿using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.DAL.Helpers;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
+using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,15 +16,15 @@ namespace CurrencyTrading.services.Services
     {
         private readonly IBalanceRepository _balanceRepository;
         private readonly IUserRepository _userRepository;
-        public BalanceService(IBalanceRepository balanceRepository,IUserRepository userRepository)
+        public BalanceService(IBalanceRepository balanceRepository, IUserRepository userRepository)
         {
             _balanceRepository = balanceRepository;
             _userRepository = userRepository;
         }
-        public async Task<Balance> AddBalance(int userId,BalanceDTO balanceDTO)
+        public async Task<Balance> AddBalance(int userId, BalanceDTO balanceDTO)
         {
             var currentUserBalance = await _userRepository.GetUserAsync(userId);
-            if(currentUserBalance.Balance.Count > 0)
+            if (currentUserBalance.Balance.Count > 0)
             {
                 foreach (var userBalance in currentUserBalance.Balance)
                 {
@@ -35,7 +37,7 @@ namespace CurrencyTrading.services.Services
                 }
 
             }
-            Balance balance = new Balance 
+            Balance balance = new Balance
             {
                 Currency = balanceDTO.Currency,
                 Amount = balanceDTO.Amount,

@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
@@ -36,17 +35,10 @@ namespace CurrencyTrading.Repository
                 Include(u=>u.Trades).FirstOrDefaultAsync(u=>u.Id == userId);
             return user;
         }
-
-        public async Task<User> CheckCredentails(string login,string password)
+        public async Task<User> GetUserByLogin(string login)
         {
             var user = await _ctx.Users.FirstOrDefaultAsync(u => u.Login == login);
-            bool isAuth = HashPassword.VerifyPass(user.Password,password);
-            if (isAuth)
-            {
-                return user;
-
-            }
-            return null;
+            return user;
         }
     }
 }

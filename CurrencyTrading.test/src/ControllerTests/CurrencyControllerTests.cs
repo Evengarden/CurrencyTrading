@@ -1,41 +1,33 @@
 ﻿using Moq;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.services.Interfaces;
+using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.ControllerTests
 {
-	public class IntegrationControllerTests
+	public class CurrencyControllerTests
 	{
-		private readonly IntegrationController _integrationController;
-		private readonly Mock<IIntegrationService> _integrationService;
+		private readonly CurrencyController _currencyController;
+		private readonly Mock<ICurrencyService> _integrationService;
         private readonly DataContext _ctx;
         private readonly User _user;
-        public IntegrationControllerTests() 
+        public CurrencyControllerTests() 
 		{
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx, out _user);
             var claims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
                 {
                     new Claim("ID", _user.Id.ToString()),
                 }, "mock"));
-            _integrationService = new Mock<IIntegrationService>();
-			_integrationController = new IntegrationController(_integrationService.Object);
-            _integrationController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
+            _integrationService = new Mock<ICurrencyService>();
+			_currencyController = new CurrencyController(_integrationService.Object);
+            _currencyController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = claims }
             };
@@ -54,9 +46,9 @@ namespace CurrencyTrading.test.src.ControllerTests
                     CurrencyPrice=70
                 }
             };
-            _integrationService.Setup(i => i.GetCurrencyFromRedis()).ReturnsAsync(currencyDTOs);
+            _integrationService.Setup(i => i.GetCurrency()).ReturnsAsync(currencyDTOs);
             //act
-            var result = await _integrationController.GetCurrency();
+            var result = await _currencyController.GetCurrency();
             //assert
             Assert.NotNull(result);
         }
@@ -73,7 +65,7 @@ namespace CurrencyTrading.test.src.ControllerTests
 
             _integrationService.Setup(i=>i.CalculateLotPrice(balanceDTO.Currency,balanceDTO.Amount)).ReturnsAsync(100);
             //act
-            var result = await _integrationController.CalculateCurrencyPrice(balanceDTO);
+            var result = await _currencyController.CalculateCurrencyPrice(balanceDTO);
             Assert.NotNull(result);
         }
     }

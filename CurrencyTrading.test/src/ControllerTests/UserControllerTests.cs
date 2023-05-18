@@ -3,7 +3,6 @@ using System.Security.Claims;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
@@ -18,26 +17,20 @@ namespace CurrencyTrading.test.src.ControllerTests
 	{
         private readonly UserController _userController;
         private readonly Mock<IUserService> _userService;
+        private readonly Mock<IAuthService> _authService;
         private readonly DataContext _ctx;
         private readonly User _user;
         public UserControllerTests()
 		{
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx,out _user);
             var claims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                     new Claim("ID", _user.Id.ToString()),
                 }, "mock"));
             _userService = new Mock<IUserService>();
-            _userController = new UserController(_userService.Object);
+            _authService = new Mock<IAuthService>();
+            _userController = new UserController(_userService.Object,_authService.Object);
             _userController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = claims }
@@ -67,7 +60,7 @@ namespace CurrencyTrading.test.src.ControllerTests
             };
             _userService.Setup(u => u.UserRegistration(It.IsAny<User>())).ThrowsAsync(new DbUpdateException());
             //act
-            Assert.ThrowsAsync<DbUpdateException>(async () =>await _userController.Registration(user));
+            await Assert.ThrowsAsync<DbUpdateException>(async () =>await _userController.Registration(user));
         }
         public async Task Auth_ShouldReturnToken()
         {
@@ -93,7 +86,7 @@ namespace CurrencyTrading.test.src.ControllerTests
             };
             _userService.Setup(u => u.Auth(It.IsAny<UserDTO>())).ThrowsAsync(new UserNotFound());
             //act
-            Assert.ThrowsAsync<UserNotFound>(async () => await _userController.Authorization(user));
+            await Assert.ThrowsAsync<UserNotFound>(async () => await _userController.Authorization(user));
         }
         public async Task GetUser_ShouldReturnFindedUser()
         {

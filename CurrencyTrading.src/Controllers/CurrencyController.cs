@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace CurrencyTrading.Controllers
 {
     [ApiController]
-    public class IntegrationController : ControllerBase
+    public class CurrencyController : ControllerBase
     {
-        public readonly IIntegrationService _integrationService;
-        public IntegrationController(IIntegrationService integrationService)
+        public readonly ICurrencyService _currencyService;
+        public CurrencyController(ICurrencyService integrationService)
         {
-            _integrationService = integrationService;
+            _currencyService = integrationService;
         }
 
         [Authorize]
@@ -19,7 +19,7 @@ namespace CurrencyTrading.Controllers
         public async Task<IActionResult> GetCurrency()
         {
 
-            var currency = await _integrationService.GetCurrencyFromRedis();
+            var currency = await _currencyService.GetCurrency();
             return Ok(currency);
         }
 
@@ -29,15 +29,14 @@ namespace CurrencyTrading.Controllers
         {
             try
             {
-                var calculatedValue = await _integrationService.CalculateLotPrice(balanceDTO.Currency, balanceDTO.Amount);
+                var calculatedValue = await _currencyService.CalculateLotPrice(balanceDTO.Currency, balanceDTO.Amount);
                 return Ok(calculatedValue);
             }
             catch (Exception e)
             {
 
-                return BadRequest(e.Message); ;
+                return BadRequest(e.Message);
             }
-            
         }
     }
 }

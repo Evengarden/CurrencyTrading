@@ -1,24 +1,20 @@
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.RepositoryTests
 {
-    public class UserRepositoryTest : IDisposable
+    public class UserRepositoryTest
     {
         private readonly UserRepository _userRepository;
         private readonly DataContext _ctx;
         public UserRepositoryTest()
         {
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                     .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                     .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
+            PrepareTestsData.InitDbCtx(out _ctx);
             _userRepository = new UserRepository(_ctx);
 
         }
@@ -32,8 +28,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert    
             Assert.NotNull(createdUser);
             Assert.Equal(user, createdUser);
-
-            Dispose();
         }
 
         public async Task UserRepository_ShouldReturnErrorOfCreatedUserWithRequiredNullField()
@@ -43,15 +37,13 @@ namespace CurrencyTrading.test.src.RepositoryTests
             user.Login = null;
             //assert
             await Assert.ThrowsAsync<DbUpdateException>(async () => await _userRepository.CreateUserAsync(user));
-
-            Dispose();
         }
 
         [Fact]
         public async Task UserRepository_ShouldReturnUpdatedUserFromDb()
         {
             //arrange
-            string previousLogin = HashPassword.HashPass("testPassword");
+            string previousLogin = Crypto.HashPassword("testPassword");
             var user = prepareUserData("user1login", previousLogin);
             user.Login = "user2login";
             var createdUser = await _userRepository.CreateUserAsync(user);
@@ -60,8 +52,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             //assert
             Assert.NotNull(updatedUser);
             Assert.NotEqual(updatedUser.Login, previousLogin);
-
-            Dispose();
         }
 
         [Fact]
@@ -73,8 +63,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             var foundedUser = await _userRepository.GetUserAsync(notExistingUserId);
             //assert    
             Assert.Null(foundedUser);
-
-            Dispose();
         }
 
         [Fact]
@@ -89,8 +77,6 @@ namespace CurrencyTrading.test.src.RepositoryTests
             Assert.NotNull(foundedUser);
             Assert.NotNull(foundedUser.Login);
             Assert.NotNull(foundedUser.Password);
-
-            Dispose();
         }
 
         public User prepareUserData(string login, string password)
@@ -98,14 +84,9 @@ namespace CurrencyTrading.test.src.RepositoryTests
             User user = new User
             {
                 Login = login,
-                Password = HashPassword.HashPass(password)
+                Password = Crypto.HashPassword(password)
             };
             return user;
-        }
-
-        public void Dispose()
-        {
-            _ctx.Dispose();
         }
 
     }

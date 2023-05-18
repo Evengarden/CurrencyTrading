@@ -3,7 +3,6 @@ using System.Security.Claims;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
@@ -19,28 +18,22 @@ namespace CurrencyTrading.test.src.ControllerTests
 	{
         private readonly LotController _lotController;
         private readonly Mock<ILotService> _lotService;
-        private readonly Mock<IIntegrationService> _integrationService;
+        private readonly Mock<ICurrencyService> _currencyService;
+        private readonly Mock<IAuthService> _authService;
         private readonly DataContext _ctx;
         private readonly User _user;
         public LotControllerTests()
 		{
-            var dbOptions = new DbContextOptionsBuilder<DataContext>()
-                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                 .Options;
-            _ctx = new DataContext(dbOptions);
-            _ctx.Database.EnsureCreated();
-            _user = _ctx.Users.Add(new User
-            {
-                Login = "test",
-                Password = HashPassword.HashPass("test")
-            }).Entity;
+            PrepareTestsData.InitDbCtx(out _ctx);
+            PrepareTestsData.InitUserInDb(_ctx, out _user);
             var claims = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                     new Claim("ID", _user.Id.ToString()),
                 }, "mock"));
             _lotService = new Mock<ILotService>();
-            _integrationService = new Mock<IIntegrationService>();
-            _lotController = new LotController(_lotService.Object,_integrationService.Object);
+            _currencyService = new Mock<ICurrencyService>();
+            _authService = new Mock<IAuthService>();
+            _lotController = new LotController(_lotService.Object,_currencyService.Object, _authService.Object);
             _lotController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext()
             {
                 HttpContext = new DefaultHttpContext() { User = claims }
@@ -117,7 +110,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 Type = Types.Buy
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l=>l.UpdateLot(lot.Id,lotDTO,_user.Id)).ReturnsAsync(lot);
             //act
             var result = await _lotController.UpdateLot(lot.Id,lotDTO);
@@ -149,7 +142,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 Type = Types.Buy
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.UpdateLot(lot.Id, lotDTO, _user.Id)).ThrowsAsync(new NotEnoughBalanceForSold());
 
             //act
@@ -180,7 +173,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 Type = Types.Buy
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.UpdateLot(lot.Id, lotDTO, _user.Id)).ThrowsAsync(new NotEnoughBalanceForBuy());
 
             //act
@@ -212,7 +205,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 Type = Types.Buy
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.UpdateLot(lot.Id, lotDTO, _user.Id)).ThrowsAsync(new LotAlreadySolded());
 
             //act
@@ -275,7 +268,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 Type = Types.Buy
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.DeleteLot(lot.Id)).ThrowsAsync(new LotAlreadySolded());
             //act
             Assert.ThrowsAsync<LotAlreadySolded>(async () => await _lotController.DeleteLot(lot.Id));
@@ -305,7 +298,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 OwnerId = _user.Id
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.CreateLot(_user.Id, lotDTO)).ReturnsAsync(lot);
             //act
             var result = await _lotController.CreateLot(lotDTO);
@@ -337,7 +330,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 OwnerId = _user.Id
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.CreateLot(_user.Id, lotDTO)).ThrowsAsync(new NotEnoughBalanceForSold());
             //act
             Assert.ThrowsAsync<NotEnoughBalanceForSold>(async () => await _lotController.CreateLot(lotDTO));
@@ -367,7 +360,7 @@ namespace CurrencyTrading.test.src.ControllerTests
                 OwnerId = _user.Id
             };
             _lotService.Setup(l => l.GetLot(lot.Id)).ReturnsAsync(lot);
-            _integrationService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
+            _currencyService.Setup(i => i.CheckCurrencyExist(It.IsAny<string>())).ReturnsAsync("USD");
             _lotService.Setup(l => l.CreateLot(_user.Id, lotDTO)).ThrowsAsync(new NotEnoughBalanceForBuy());
             //act
             Assert.ThrowsAsync<NotEnoughBalanceForBuy>(async () => await _lotController.CreateLot(lotDTO));

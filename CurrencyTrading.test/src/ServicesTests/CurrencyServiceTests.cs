@@ -1,6 +1,7 @@
-﻿using CurrencyTrading.DAL.DTO;
+﻿using CurrencyTrading.Client.Interfaces;
+using CurrencyTrading.DAL.DTO;
+using CurrencyTrading.DAL.Interfaces;
 using CurrencyTrading.Data;
-using CurrencyTrading.Helper;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
@@ -21,56 +22,64 @@ using System.Threading.Tasks;
 
 namespace CurrencyTrading.test.src.ServicesTests
 {
-    public class IntegrationServiceTests
+    public class CurrencyServiceTests
     {
-        private readonly IntegrationService _integrationService;
-        private readonly Mock<IDistributedCache> _cache;
+        private readonly CurrencyService _currencyService;
+        private readonly Mock<ICurrencyRepository> _currencyRepository;
+        private readonly Mock<ICbApiClient> _client;
         private readonly string codes = "AUD,AZN,GBP,AMD,BYN,BGN,BRL,HUF,VND,HKD,GEL,DKK,AED,USD,EUR," +
             "EGP,INR,IDR,KZT,CAD,QAR,KGS,CNY,MDL,NZD,NOK,PLN,RON,XDR,SGD,TJS,THB,TRY,TMT,UZS,UAH,CZK," +
             "SEK,CHF,RSD,ZAR,KRW,JPY";
         private readonly CurrencyDTO _currencyDTO;
-        public IntegrationServiceTests()
+        public CurrencyServiceTests()
         {
-            _cache = new Mock<IDistributedCache> { CallBase = true};
-            _cache.Setup(c => c.GetAsync("codes",default)).ReturnsAsync(Encoding.ASCII.GetBytes(codes));
+            _currencyRepository = new Mock<ICurrencyRepository>();
+            _client = new Mock<ICbApiClient>();
+            _currencyRepository.Setup(c => c.GetCurrencyCodes()).ReturnsAsync(codes);
             _currencyDTO = new CurrencyDTO
             {
                 CurrencyCode = "AUD",
                 CurrencyNominal = 1,
                 CurrencyPrice = 1
             };
-            _cache.Setup(c => c.GetAsync(It.Is<string>(s => codes.Split(",",StringSplitOptions.None)
-            .Any(s.Contains)), default))
-                .ReturnsAsync(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(_currencyDTO)));
-           
-            _integrationService = new IntegrationService(_cache.Object);
+            _currencyRepository.Setup(c => c.GetCurrency(It.Is<string>(s => codes.Split(",", StringSplitOptions.None)
+            .Any(s.Contains))))
+                .ReturnsAsync(JsonConvert.SerializeObject(_currencyDTO));
+            _currencyService = new CurrencyService(_currencyRepository.Object,_client.Object);
         }
 
         [Fact]
-        public async Task GetCurrencyFromRedis_ShouldReturnTestCollection()
+        public async Task GetCurrencyFromRedis_ShouldReturnNotEmptyTestCollection()
         {
             //act
-            var result = await _integrationService.GetCurrencyFromRedis();
+            var result = await _currencyService.GetCurrency();
             //assert
             Assert.NotEmpty(result);
-            Assert.False(result.IsNullOrEmpty());
         }
 
         [Fact]
-        public async Task CheckCurrencyExist_ShouldReturnTestCurrency()
+        public async Task CheckCurrencyExist_ShouldReturnNotNullTestCurrency()
         {
             //act
-            var result = await _integrationService.CheckCurrencyExist("AUD");
+            var result = await _currencyService.CheckCurrencyExist("AUD");
             //assert
-            Assert.NotEmpty(result);
             Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task CheckCurrencyExist_ShouldReturnNotEmptyTestCurrency()
+        {
+            //act
+            var result = await _currencyService.CheckCurrencyExist("AUD");
+            //assert
+            Assert.NotEmpty(result);
         }
 
         [Fact]
         public async Task CheckCurrencyExist_ShouldReturnCurrencyNotFoundException()
         {
             //act + assert
-            Assert.ThrowsAsync<CurrencyNotFound>(async () => await _integrationService.CheckCurrencyExist("test"));
+            Assert.ThrowsAsync<CurrencyNotFound>(async () => await _currencyService.CheckCurrencyExist("test"));
         }
 
         [Fact]
@@ -79,7 +88,7 @@ namespace CurrencyTrading.test.src.ServicesTests
             //arrange
             int currencyAmount = 10;
             //act
-            var result = await _integrationService.CalculateLotPrice("AUD",currencyAmount);
+            var result = await _currencyService.CalculateLotPrice("AUD",currencyAmount);
             //assert
             Assert.Equal(result, (_currencyDTO.CurrencyPrice / _currencyDTO.CurrencyNominal) * currencyAmount);
         }
@@ -90,7 +99,7 @@ namespace CurrencyTrading.test.src.ServicesTests
             //arrange
             int currencyAmount = 10;
             //act + assert
-            Assert.ThrowsAsync<CurrencyNotFound>(async () => await _integrationService.CalculateLotPrice("test", currencyAmount));
+            Assert.ThrowsAsync<CurrencyNotFound>(async () => await _currencyService.CalculateLotPrice("test", currencyAmount));
         }
     }
 }

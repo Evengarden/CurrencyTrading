@@ -1,8 +1,8 @@
-﻿using CurrencyTrading.Helper;
-using CurrencyTrading.Models;
+﻿using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using System.Security.Policy;
+using System.Web.Helpers;
 
 namespace CurrencyTrading.Data
 {
@@ -27,13 +27,13 @@ namespace CurrencyTrading.Data
             {
                 Id = 1,  
                 Login = "test1",
-                Password = HashPassword.HashPass("test1"),
+                Password = Crypto.HashPassword("test1"),
             };
             User user2 = new User
             {
                 Id = 2,
                 Login = "test2",
-                Password = HashPassword.HashPass("test2"),
+                Password = Crypto.HashPassword("test2"),
             };
             modelBuilder.Entity<User>().HasData(user1);
             modelBuilder.Entity<User>().HasData(user2);
