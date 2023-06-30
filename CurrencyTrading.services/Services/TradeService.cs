@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using CurrencyTrading.DAL.DTO;
+﻿using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
 
 namespace CurrencyTrading.services.Services

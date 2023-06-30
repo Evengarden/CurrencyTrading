@@ -3,9 +3,6 @@ using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
-using System.Runtime.CompilerServices;
-using System.Transactions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.DAL.Helpers;
 using AutoMapper;
 

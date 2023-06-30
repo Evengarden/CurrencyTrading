@@ -2,19 +2,10 @@
 using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
-using CurrencyTrading.Repository;
 using CurrencyTrading.services.CustomExceptions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
 using CurrencyTrading.services.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyTrading.test.src.ServicesTests
 {

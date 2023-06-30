@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using CurrencyTrading.DAL.DTO;
+﻿using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
 using CurrencyTrading.services.Services;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace CurrencyTrading.test.src.ServicesTests

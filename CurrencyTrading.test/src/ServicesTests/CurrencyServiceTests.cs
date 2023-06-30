@@ -1,24 +1,10 @@
 ﻿using CurrencyTrading.Client.Interfaces;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.DAL.Interfaces;
-using CurrencyTrading.Data;
-using CurrencyTrading.Interfaces;
-using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyTrading.test.src.ServicesTests
 {

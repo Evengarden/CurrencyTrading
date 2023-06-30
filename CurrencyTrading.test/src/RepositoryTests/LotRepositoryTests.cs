@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using CurrencyTrading.DAL.Mapping;
-using CurrencyTrading.Data;
+﻿using CurrencyTrading.Data;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
 using Microsoft.EntityFrameworkCore;

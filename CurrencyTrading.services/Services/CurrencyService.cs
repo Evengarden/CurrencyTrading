@@ -2,17 +2,13 @@
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.DAL.Interfaces;
 using CurrencyTrading.services.CustomExceptions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
-using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Quartz;
-using RestSharp;
-using System.Xml.Linq;
 
 namespace CurrencyTrading.services.Services
 {
-  
+
     public class CurrencyService : ICurrencyService, IJob
     {
         public readonly ICurrencyRepository _currencyRepository;

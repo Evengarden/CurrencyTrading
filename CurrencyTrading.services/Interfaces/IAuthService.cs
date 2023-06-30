@@ -1,5 +1,4 @@
 ﻿using CurrencyTrading.Models;
-using CurrencyTrading.services.Helpers;
 using System.Security.Claims;
 
 namespace CurrencyTrading.services.Interfaces

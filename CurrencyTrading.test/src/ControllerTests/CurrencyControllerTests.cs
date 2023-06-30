@@ -2,16 +2,14 @@
 using CurrencyTrading.Controllers;
 using CurrencyTrading.Data;
 using CurrencyTrading.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.services.Interfaces;
-using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.ControllerTests
 {
-	public class CurrencyControllerTests
+    public class CurrencyControllerTests
 	{
 		private readonly CurrencyController _currencyController;
 		private readonly Mock<ICurrencyService> _integrationService;

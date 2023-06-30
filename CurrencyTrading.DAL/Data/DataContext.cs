@@ -1,7 +1,5 @@
 ﻿using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
 using System.Web.Helpers;
 
 namespace CurrencyTrading.Data

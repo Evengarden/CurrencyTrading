@@ -1,9 +1,6 @@
 ﻿using CurrencyTrading.Data;
-using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.Repository;
-using Microsoft.EntityFrameworkCore;
-using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src.RepositoryTests
 {

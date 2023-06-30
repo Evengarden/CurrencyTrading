@@ -1,10 +1,7 @@
 ﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Models;
 using CurrencyTrading.services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace CurrencyTrading.Controllers
 {

@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using CurrencyTrading.DAL.Mapping;
-using CurrencyTrading.Data;
+﻿using CurrencyTrading.Data;
 using CurrencyTrading.Models;
 using Microsoft.EntityFrameworkCore;
-using Pipelines.Sockets.Unofficial.Buffers;
 using System.Web.Helpers;
 
 namespace CurrencyTrading.test.src

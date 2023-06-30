@@ -1,11 +1,5 @@
-﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.DAL.Interfaces;
+﻿using CurrencyTrading.DAL.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyTrading.DAL.Repository
 {

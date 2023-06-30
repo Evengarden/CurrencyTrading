@@ -1,16 +1,7 @@
-﻿using CurrencyTrading.DAL.DTO;
-using CurrencyTrading.Interfaces;
+﻿using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
-using CurrencyTrading.services.Helpers;
 using CurrencyTrading.services.Interfaces;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CurrencyTrading.services.Services
 {

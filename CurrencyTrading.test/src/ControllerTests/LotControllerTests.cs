@@ -1,20 +1,16 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.CustomExceptions;
 using CurrencyTrading.services.Interfaces;
-using CurrencyTrading.services.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Moq;
-using Xunit;
 
 namespace CurrencyTrading.test.src.ControllerTests
 {
-	public class LotControllerTests
+    public class LotControllerTests
 	{
         private readonly LotController _lotController;
         private readonly Mock<ILotService> _lotService;

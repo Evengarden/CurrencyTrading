@@ -1,17 +1,15 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using CurrencyTrading.Controllers;
 using CurrencyTrading.DAL.DTO;
 using CurrencyTrading.Data;
 using CurrencyTrading.Models;
 using CurrencyTrading.services.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace CurrencyTrading.test.src.ControllerTests
 {
-	public class BalanceControllerTests
+    public class BalanceControllerTests
 	{
 		private readonly BalanceController _balanceController;
 		private readonly Mock<IBalanceService> _balanceService;

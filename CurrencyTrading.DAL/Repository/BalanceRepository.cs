@@ -1,7 +1,6 @@
 ﻿using CurrencyTrading.Data;
 using CurrencyTrading.Interfaces;
 using CurrencyTrading.Models;
-using System.Runtime.InteropServices;
 
 namespace CurrencyTrading.Repository
 {
